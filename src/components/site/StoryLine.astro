@@ -1,11 +1,15 @@
 ---
-// a short centred serif beat of the story.
+// a short centred serif beat of the story, with an optional lowercase label above it.
 interface Props {
   text: string[];
+  label?: string;
 }
-const { text } = Astro.props;
+const { text, label } = Astro.props;
 ---
 
-<div data-reveal class="mx-auto flex max-w-[19rem] flex-col gap-7 text-center font-serif text-[1.3125rem] leading-[1.75rem] text-ink">
-  {text.map((t) => <p>{t}</p>)}
+<div data-reveal class="mx-auto flex max-w-[20rem] flex-col items-center gap-6 text-center sm:max-w-[22rem]">
+  {label && <p class="beat-label">{label}</p>}
+  <div class="flex flex-col gap-6 font-serif text-[1.25rem] leading-[1.7rem] text-ink sm:text-[1.3125rem] sm:leading-[1.75rem]">
+    {text.map((t) => <p>{t}</p>)}
+  </div>
 </div>

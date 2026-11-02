@@ -65,18 +65,18 @@ export default function FeaturePill({ label, title, body, refs }: Props) {
               aria-label="Close"
               onClick={() => setOpen(false)}
             >
-              <img src="/assets/close.svg" width={14} height={14} alt="" />
+              <img src="/assets/close.svg" width={12} height={12} alt="" />
             </button>
-            <h3 id={headingId} className="font-serif text-[2rem] leading-[2.5rem] text-ink">
+            <h3 id={headingId} className="font-serif text-[1.5rem] leading-[1.875rem] text-ink sm:text-[1.75rem] sm:leading-[2.125rem]">
               {title}
             </h3>
-            <div className="mt-8 flex flex-col gap-6 font-sans text-[1.25rem] leading-[1.875rem] text-body">
+            <div className="mt-5 flex flex-col gap-4 font-sans text-[1rem] leading-[1.6] text-body sm:text-[1.0625rem]">
               {body.map((p) => (
                 <p key={p}>{p}</p>
               ))}
             </div>
             {refs && refs.length > 0 && (
-              <ul className="mt-10 flex list-none flex-col gap-2 border-t border-line-soft p-0 pt-5 font-sans text-footnote text-ink-muted">
+              <ul className="mt-7 flex list-none flex-col gap-1.5 border-t border-line-soft p-0 pt-4 font-sans text-[0.8125rem] leading-[1.45] text-ink-muted">
                 {refs.map((r) => (
                   <li key={r}>{r}</li>
                 ))}

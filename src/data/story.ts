@@ -7,6 +7,22 @@ export type OrbColor = "rose" | "apricot" | "sky" | "sage" | "cream";
 export type CalColor = "lavender" | "flamingo" | "sage" | "peacock" | "banana" | "graphite";
 export type SourceId = "gcal" | "notion";
 
+// each feeling family has a design-system colour; an orb blends a note's top two
+export const emotions: Record<OrbColor, { name: string; words: string }> = {
+  rose: { name: "tense", words: "tense, drained, frustrated" },
+  apricot: { name: "driven", words: "driven, clear, excited" },
+  cream: { name: "hopeful", words: "hopeful, reflective" },
+  sage: { name: "grounded", words: "grounded, content" },
+  sky: { name: "calm", words: "calm, relieved" },
+};
+
+export interface Feeling {
+  word: string;
+  color: OrbColor;
+  // share of the note, 0–100
+  share: number;
+}
+
 export interface HomeNote {
   id: string;
   label: string;
@@ -67,7 +83,7 @@ export const calColors: Record<CalColor, { name: string; hex: string }> = {
 };
 
 export const story = {
-  title: "Bloom",
+  title: "bloom",
   statusTime: "6:42",
   restart: "Restart",
 
@@ -78,7 +94,7 @@ export const story = {
     openHome: "Back to Home",
     play: "Play voice note",
     pause: "Pause voice note",
-    mic: "Talk to Bloom",
+    mic: "Talk to bloom",
     move: "Move…",
     letGo: "Let go",
     undo: "Undo",
@@ -99,15 +115,16 @@ export const story = {
       { id: "meetings", label: "too many meetings", meta: "Thu · 3 min", minutes: 3, colors: ["apricot", "rose"], recorded: true },
     ] satisfies HomeNote[],
     hint: "Tap to talk",
+    patterns: "This week's patterns",
     arrived: "2 loose ends parked. Nothing urgent before 9am tomorrow.",
   },
 
   recording: {
     title: "Recording",
-    listening: "Bloom is listening",
+    listening: "bloom is listening",
     stop: "Stop recording",
     cancel: "Discard recording",
-    sorting: "Sorting what you felt from what's left to do…",
+    sorting: "Finding the feelings and loose ends…",
     // words appear as if spoken, a few at a time
     live: "okay so. that was six calls. six. I didn't open Figma once, which is… yeah. the onboarding thing came up again in the Acme call. Daniel's being vague but it needs reworking, probably by Monday? not tonight. oh, and Leah asked about the offsite two days ago and I still haven't replied. ugh. okay. I'm closing the laptop.",
   },
@@ -118,17 +135,27 @@ export const story = {
     duration: "2:38",
     throughline: "2 loose ends parked. Nothing urgent before 9am tomorrow.",
     tabs: [
-      { id: "synthesis", label: "AI Synthesis" },
+      { id: "reflection", label: "Reflection" },
       { id: "transcript", label: "Transcript" },
     ],
-    synthesis: {
-      heading: "Running on other people's agendas",
-      body: "Six calls back to back, and the work you care about kept slipping. You sounded drained, but clear about what matters.",
-      supporting: "Two things are still on your mind: the onboarding rework for Daniel, and getting back to Leah. Both are parked. Neither needs you tonight.",
-      tags: ["drained", "back-to-back", "clarity"],
-      parkedLabel: "Parked",
-      sitWithLabel: "Something to sit with",
-      sitWith: "Which one call this week could have been a message?",
+    reflection: {
+      feelingsLabel: "Feelings",
+      feelings: [
+        { word: "tense", color: "rose", share: 46 },
+        { word: "drained", color: "rose", share: 28 },
+        { word: "clear", color: "apricot", share: 26 },
+      ] as Feeling[],
+      editHint: "Tags are suggestions. Tap one to change it.",
+      quoteLabel: "In your words",
+      quote: "I didn't open Figma once.",
+      themesLabel: "Themes",
+      themes: ["Other people's agendas", "Unfinished work", "Closing the laptop"],
+      parkedLabel: "Loose ends",
+      threadsLabel: "Threads",
+      threads: [
+        { text: "The onboarding rework", count: "3rd note this week" },
+        { text: "Getting back to people", count: "2nd note this week" },
+      ],
       sources: "Read: Google Calendar (today's calls), Slack #acme-review. Nothing else.",
     },
     transcript:
@@ -227,6 +254,36 @@ export const story = {
     planned: "Friday's planned. Nothing else needs you.",
   },
 
+  patterns: {
+    title: "This week",
+    range: "3 – 9 Nov",
+    ranges: ["Week", "Month", "Year"],
+    mapLabel: "Emotion map",
+    mapHint: "Each dot is a note, coloured by how it felt.",
+    days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    // x: day index, y: 0 low energy – 1 high energy
+    dots: [
+      { id: "slow-start", day: 1, y: 0.55, color: "cream" as OrbColor, label: "slow start, good finish" },
+      { id: "water", day: 2, y: 0.3, color: "sky" as OrbColor, label: "run by the water" },
+      { id: "meetings", day: 3, y: 0.78, color: "rose" as OrbColor, label: "too many meetings", recorded: true },
+    ],
+    axisHigh: "wired",
+    axisLow: "settled",
+    feelingsLabel: "Feelings this week",
+    feelings: [
+      { word: "tense", color: "rose", share: 38 },
+      { word: "calm", color: "sky", share: 24 },
+      { word: "hopeful", color: "cream", share: 20 },
+      { word: "driven", color: "apricot", share: 18 },
+    ] as Feeling[],
+    themesLabel: "Overarching themes",
+    themes: ["Work spilling into evenings", "Small wins", "Wanting quiet"],
+    threadsLabel: "Continuous threads",
+    threads: ["The onboarding rework keeps coming back", "Replies you're putting off"],
+    newLabel: "New directions",
+    newer: ["Evenings after a run read calmer"],
+  },
+
   settings: {
     title: "Settings",
     sections: {
@@ -237,7 +294,7 @@ export const story = {
       privacy: "Privacy",
     },
     lamp: {
-      name: "Bloom · Sam's desk",
+      name: "bloom · Sam's desk",
       status: "Connected",
       toggles: [
         { id: "glow", label: "Glow when the workday ends", on: true },
@@ -249,10 +306,10 @@ export const story = {
       { id: "gcal", name: "Google Calendar", detail: "Reads events. Adds only what you approve.", on: true },
       { id: "slack", name: "Slack", detail: "Reads channels you choose. Never posts.", on: true },
       { id: "notion", name: "Notion", detail: "Reads pages you choose. Never edits.", on: true },
-      { id: "gmail", name: "Gmail", detail: "Off. Bloom can't see your email.", on: false },
+      { id: "gmail", name: "Gmail", detail: "Off. bloom can't see your email.", on: false },
     ],
     colours: {
-      note: "Bloom uses Google Calendar's colours, so a loose end looks the same in both places.",
+      note: "bloom uses Google Calendar's colours, so a loose end looks the same in both places.",
       rows: [
         { category: "Deep work", color: "lavender" as CalColor },
         { category: "Replies", color: "flamingo" as CalColor },
@@ -260,7 +317,7 @@ export const story = {
       ],
     },
     privacy: [
-      { id: "log", label: "What Bloom read today" },
+      { id: "log", label: "What bloom read today" },
       { id: "delete", label: "Delete all notes" },
     ],
     restart: "Restart demo",

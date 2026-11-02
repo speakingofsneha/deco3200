@@ -27,6 +27,7 @@ src/components/journal/Blob.tsx         one home note (orb, leader, label)
 src/components/journal/Sheet.tsx        screens that grow from where they opened; pull down or edge-swipe to close
 src/components/journal/RecordingScreen.tsx  the mic opens this; stop turns it into a note
 src/components/journal/SettingsScreen.tsx   lamp, quiet hours, sources, task colours, restart
+src/components/journal/PatternsScreen.tsx   the week: emotion map, feelings, themes, threads, new directions
 src/components/journal/GlassMic.tsx     the record button
 src/components/journal/NoteScreen.tsx   the open voice note
 src/components/journal/Player.tsx       play control and waveform

@@ -41,7 +41,7 @@ import { site, story, closing } from "../data/site";
     <!-- story -->
     <section id="story" class="flex scroll-mt-24 flex-col items-center gap-28 py-24 sm:gap-36">
       {story.map((b) => {
-        if (b.kind === "line") return <StoryLine text={b.text} />;
+        if (b.kind === "line") return <StoryLine text={b.text} label={b.label} />;
         if (b.kind === "big") return <BigLine text={b.text} />;
         if (b.kind === "divider") return <Divider />;
         if (b.kind === "photo") return <MediaPlaceholder caption={b.caption} src={b.src} />;

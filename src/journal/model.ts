@@ -6,8 +6,8 @@ export const phoneWidth = 402;
 export const phoneHeight = 874;
 
 // home and week live on the swipe track; the rest open over it
-export type Screen = "home" | "week" | "note" | "day" | "settings" | "recording";
-export type Overlay = Extract<Screen, "note" | "day" | "settings" | "recording">;
+export type Screen = "home" | "week" | "note" | "day" | "settings" | "recording" | "patterns";
+export type Overlay = Extract<Screen, "note" | "day" | "settings" | "recording" | "patterns">;
 export type Place = "tray" | DayId | "gone";
 export type Suggestion = "pending" | "accepted" | "dismissed";
 
@@ -25,7 +25,7 @@ export function isDayId(value: string): value is DayId {
 }
 
 export function isOverlay(screen: Screen): screen is Overlay {
-  return screen === "note" || screen === "day" || screen === "settings" || screen === "recording";
+  return screen === "note" || screen === "day" || screen === "settings" || screen === "recording" || screen === "patterns";
 }
 
 // the screen that sits under an overlay

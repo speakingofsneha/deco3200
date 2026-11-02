@@ -7,6 +7,7 @@ import type { JournalActions, JournalState } from "../../journal/useJournal";
 import DayScreen from "./DayScreen";
 import HomeScreen from "./HomeScreen";
 import NoteScreen from "./NoteScreen";
+import PatternsScreen from "./PatternsScreen";
 import RecordingScreen from "./RecordingScreen";
 import SettingsScreen from "./SettingsScreen";
 import WeekScreen from "./WeekScreen";
@@ -66,6 +67,7 @@ export default function JournalApp({ state, actions }: Props) {
         <NoteScreen state={state} actions={actions} />
         <DayScreen state={state} actions={actions} />
         <SettingsScreen state={state} actions={actions} onRestart={actions.restart} />
+        <PatternsScreen state={state} actions={actions} />
         <RecordingScreen state={state} actions={actions} />
       </div>
 

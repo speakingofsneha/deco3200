@@ -21,7 +21,7 @@ export default function DayScreen({ state, actions }: Props) {
     <Sheet id="screen-day" labelledBy="day-title" open={state.screen === "day"} origin={state.origin} pull={state.pull}>
       <header className="screen-head screen-head--day">
         <button type="button" className="back-btn" id="day-back" aria-label={story.ui.backWeek} onClick={actions.close}>
-          <img src="/assets/back.svg" width={21} height={21} alt="" />
+          <img src="/assets/back.svg" width={18} height={18} alt="" />
         </button>
         <h1 id="day-title" tabIndex={-1}>
           {story.day.title}

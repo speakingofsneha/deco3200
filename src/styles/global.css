@@ -2242,3 +2242,373 @@
 .cal-item--week:not(.cal-item--imported) {
   min-height: 64px;
 }
+
+/* ==================================================================
+   Bloom v3: reflection without replies, emotion colours, patterns
+   ================================================================== */
+.back-btn {
+  width: 18px;
+  height: 18px;
+  padding: 13px;
+  margin: -13px;
+}
+
+.home-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.patterns-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px 0 12px;
+  margin-left: -2px;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-ink);
+  background: rgb(250 249 243 / 70%);
+}
+
+.patterns-pill::after {
+  content: "";
+  position: absolute;
+  inset: -4px 0;
+}
+
+.patterns-pill {
+  position: relative;
+}
+
+.spark {
+  display: inline-block;
+  margin: 0 0.45em;
+  font-size: 0.7em;
+  color: var(--color-ink-muted);
+  transform: translateY(-0.08em);
+}
+
+.patterns-pill .spark {
+  margin: 0;
+  color: var(--color-apricot);
+  font-size: 12px;
+  filter: saturate(1.6) brightness(0.85);
+}
+
+.head-sub {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-ink-muted);
+}
+
+/* reflection tab */
+.refl {
+  margin-top: 26px;
+}
+
+.refl:first-child {
+  margin-top: 4px;
+}
+
+.refl .eyebrow {
+  margin-bottom: 12px;
+}
+
+.feel-bar {
+  display: flex;
+  height: 10px;
+  gap: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.feel-bar span {
+  flex-basis: 0;
+  background: var(--feel);
+  filter: saturate(1.25);
+}
+
+.feel-tags {
+  list-style: none;
+  padding: 0;
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feel-tags li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--feel) 30%, var(--color-canvas));
+  font-size: 15px;
+  color: var(--color-ink);
+}
+
+.feel-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--feel);
+  filter: saturate(1.4) brightness(0.92);
+}
+
+.feel-share {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.refl-hint {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+.refl-quote {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.themes {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--color-ink);
+}
+
+.themes--big {
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.threads,
+.pat-list {
+  list-style: none;
+  padding: 0;
+}
+
+.threads li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  border-bottom: 1px solid var(--color-line-soft);
+  font-size: 16px;
+  color: var(--color-ink);
+}
+
+.pat-list li {
+  position: relative;
+  padding: 12px 0 12px 20px;
+  border-bottom: 1px solid var(--color-line-soft);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+
+.pat-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 19px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ink);
+}
+
+.tab-panel {
+  padding: 22px 0 0;
+}
+
+/* patterns sheet */
+.range {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  align-self: flex-start;
+}
+
+.range-opt {
+  display: grid;
+  place-items: center;
+  min-width: 72px;
+  height: 34px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--color-ink-muted);
+}
+
+.range-opt.is-on {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  box-shadow: 0 1px 4px rgb(40 34 24 / 10%);
+}
+
+.emap {
+  position: relative;
+  border-radius: 16px;
+  background: var(--color-surface);
+  padding: 14px 12px 34px 44px;
+}
+
+.emap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.emap-axis {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  bottom: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.emap-days {
+  position: absolute;
+  left: 44px;
+  right: 12px;
+  bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 calc(18 / 340 * 100% - 10px);
+  font-size: 12px;
+  color: var(--color-ink-muted);
+}
+
+.emap-dot.is-new {
+  animation: fade-in 900ms var(--ease-calm) 300ms both;
+}
+
+.feel-rows {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feel-rows li {
+  display: grid;
+  grid-template-columns: 96px 1fr 44px;
+  align-items: center;
+  gap: 12px;
+}
+
+.feel-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--color-ink);
+}
+
+.feel-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.feel-track span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--feel);
+  filter: saturate(1.3);
+}
+
+.feel-rows .feel-share {
+  text-align: right;
+}
+
+/* back to the story */
+.to-story {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px 0 12px;
+  border-radius: 999px;
+  background: rgb(250 249 243 / 72%);
+  border: 1px solid rgb(17 18 16 / 8%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 15px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.to-story:hover {
+  background: var(--color-canvas);
+}
+
+@media (max-width: 540px) {
+  .to-story {
+    top: 8px;
+    left: 8px;
+    min-height: 36px;
+    padding: 0 12px 0 8px;
+    font-size: 14px;
+  }
+}
+
+.tab-panel h2.eyebrow {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-muted);
+}
+
+.emap-axis {
+  writing-mode: horizontal-tb;
+  transform: none;
+  width: 20px;
+}
+
+.emap-axis span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* clip rather than hide, so focus or scroll-into-view can never shift the screens sideways */
+.phone,
+.app,
+.pane-slot--home {
+  overflow: clip;
+}

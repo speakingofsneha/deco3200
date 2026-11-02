@@ -24,7 +24,7 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
     <Sheet id="screen-settings" labelledBy="settings-title" open={state.screen === "settings"} origin={state.origin} pull={state.pull}>
       <header className="screen-head">
         <button type="button" className="back-btn" aria-label={story.ui.backHome} onClick={actions.close}>
-          <img src="/assets/back.svg" width={21} height={21} alt="" />
+          <img src="/assets/back.svg" width={18} height={18} alt="" />
         </button>
         <h1 id="settings-title" tabIndex={-1}>
           {s.title}

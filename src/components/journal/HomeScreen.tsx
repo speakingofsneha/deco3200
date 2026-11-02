@@ -22,6 +22,12 @@ export default function HomeScreen({ items, active, recorded, arrived, actions }
         <h1 id="home-title" tabIndex={-1}>
           {story.home.title}
         </h1>
+        <button type="button" className="patterns-pill" onClick={(event) => actions.openPatterns(event.currentTarget)}>
+          <span className="spark" aria-hidden="true">
+            ✦
+          </span>
+          {story.home.patterns}
+        </button>
       </header>
       <button type="button" className="settings" aria-label={story.ui.settings} onClick={(event) => actions.openSettings(event.currentTarget)}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

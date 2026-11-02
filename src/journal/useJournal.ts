@@ -59,6 +59,7 @@ export interface JournalActions {
   openHome: () => void;
   openDay: (from?: Element | null) => void;
   openSettings: (from?: Element | null) => void;
+  openPatterns: (from?: Element | null) => void;
   openRecording: (from?: Element | null) => void;
   stopRecording: () => void;
   close: () => void;
@@ -114,7 +115,7 @@ const initialState: JournalState = {
   recSeconds: 0,
   settings: freshSettings(),
   playing: false,
-  tab: "synthesis",
+  tab: "reflection",
   menuId: null,
   toast: false,
   drag: null,
@@ -182,7 +183,7 @@ function resetScroll(phone: HTMLElement) {
     }
     scroller.scrollLeft = left;
   }
-  for (const id of ["note-scroll", "day-scroll", "settings-scroll"]) {
+  for (const id of ["note-scroll", "day-scroll", "settings-scroll", "patterns-scroll"]) {
     const el = phone.querySelector<HTMLElement>(`#${id}`);
     if (el) el.scrollTop = 0;
   }
@@ -194,6 +195,7 @@ const titleFor: Record<Screen, string> = {
   note: "note-title",
   day: "day-title",
   settings: "settings-title",
+  patterns: "patterns-title",
   recording: "rec-title",
 };
 
@@ -289,6 +291,9 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
     },
     openSettings(from) {
       openOverlay("settings", from);
+    },
+    openPatterns(from) {
+      openOverlay("patterns", from);
     },
     openRecording(from) {
       openOverlay("recording", from, { recPhase: "listening", recSeconds: 0 });
@@ -432,7 +437,7 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
         return;
       }
 
-      if (target.closest(".tray, [role='menu'], .mic, .settings")) return;
+      if (target.closest(".tray, [role='menu'], .mic, .settings, .patterns-pill")) return;
       if (screen === "week" && at.x > 32 && !target.closest(".week-head, [data-open-home]")) return;
       startGesture(event, "track");
     }
