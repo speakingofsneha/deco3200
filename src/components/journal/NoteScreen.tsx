@@ -1,8 +1,9 @@
-// the open voice note. bloom doesn't reply; it reflects:
-// the feelings in what was said, its themes, threads and loose ends.
+// the open voice note. bloom doesn't reply; its synthesis shows
+// the feelings in what was said, the themes, and the loose ends.
 import type { CSSProperties } from "react";
 import { calColors, story, type OrbColor } from "../../data/story";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
+import FeelingOrbs from "./FeelingOrbs";
 import Player from "./Player";
 import Sheet from "./Sheet";
 
@@ -16,7 +17,7 @@ export function feelingColor(color: OrbColor): CSSProperties {
 }
 
 export default function NoteScreen({ state, actions }: Props) {
-  const r = story.note.reflection;
+  const r = story.note.synthesis;
   const { tab } = state;
   const parked = story.looseEnds.filter((item) => item.noteId === story.note.id);
 
@@ -61,45 +62,24 @@ export default function NoteScreen({ state, actions }: Props) {
             })}
           </div>
 
-          <div role="tabpanel" className="tab-panel" id="panel-reflection" aria-labelledby="tab-reflection" tabIndex={0} hidden={tab !== "reflection"}>
+          <div role="tabpanel" className="tab-panel" id="panel-synthesis" aria-labelledby="tab-synthesis" tabIndex={0} hidden={tab !== "synthesis"}>
             <section className="refl">
               <h2 className="eyebrow">{r.feelingsLabel}</h2>
-              <div className="feel-bar" aria-hidden="true">
-                {r.feelings.map((f) => (
-                  <span key={f.word} style={{ ...feelingColor(f.color), flexGrow: f.share }} />
-                ))}
-              </div>
-              <ul className="feel-tags">
-                {r.feelings.map((f) => (
-                  <li key={f.word} style={feelingColor(f.color)}>
-                    <span className="feel-dot" aria-hidden="true" />
-                    {f.word}
-                    <span className="feel-share">{f.share}%</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="refl-hint">{r.editHint}</p>
-            </section>
-
-            <section className="refl">
-              <h2 className="eyebrow">{r.quoteLabel}</h2>
-              <blockquote className="refl-quote">“{r.quote}”</blockquote>
+              <FeelingOrbs feelings={r.feelings} />
             </section>
 
             <section className="refl">
               <h2 className="eyebrow">{r.themesLabel}</h2>
-              <p className="themes">
-                {r.themes.map((t, i) => (
-                  <span key={t}>
-                    {i > 0 && (
-                      <span className="spark" aria-hidden="true">
-                        ✦
-                      </span>
-                    )}
+              <ul className="theme-lines">
+                {r.themes.map((t) => (
+                  <li key={t}>
+                    <span className="spark" aria-hidden="true">
+                      ✦
+                    </span>
                     {t}
-                  </span>
+                  </li>
                 ))}
-              </p>
+              </ul>
             </section>
 
             <section className="refl">
@@ -114,20 +94,6 @@ export default function NoteScreen({ state, actions }: Props) {
                 ))}
               </ul>
             </section>
-
-            <section className="refl">
-              <h2 className="eyebrow">{r.threadsLabel}</h2>
-              <ul className="threads">
-                {r.threads.map((t) => (
-                  <li key={t.text}>
-                    <span>{t.text}</span>
-                    <span className="parked-cat">{t.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <p className="sources-line">{r.sources}</p>
           </div>
 
           <div role="tabpanel" className="tab-panel" id="panel-transcript" aria-labelledby="tab-transcript" tabIndex={0} hidden={tab !== "transcript"}>

@@ -2612,3 +2612,198 @@
 .pane-slot--home {
   overflow: clip;
 }
+
+/* ==================================================================
+   Bloom v4: orb sizes by length, quieter synthesis and patterns
+   ================================================================== */
+
+/* orbs grow with the length of the note; centred on their x */
+.blob {
+  width: max(190px, calc(210px * var(--orb, 1)));
+  margin-left: calc(max(190px, calc(210px * var(--orb, 1))) / -2);
+}
+
+.blob-orb,
+.blob[data-open-note]:hover .blob-orb,
+.blob[data-open-note]:focus-visible .blob-orb {
+  width: calc(210px * var(--orb, 1));
+  height: calc(137px * var(--orb, 1));
+  transform: none;
+}
+
+.blob[data-open-note]:hover .blob-orb,
+.blob[data-open-note]:focus-visible .blob-orb {
+  filter: saturate(1.15);
+}
+
+.blob[data-blob="slow-start"] {
+  top: 196px;
+  left: 150px;
+}
+
+.blob[data-blob="meetings"] {
+  top: 432px;
+  left: 286px;
+}
+
+.blob[data-blob="water"] {
+  top: 568px;
+  left: 104px;
+}
+
+.arrival {
+  top: 708px;
+}
+
+/* back to the story: just an arrow */
+.to-story,
+.to-story:hover {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--color-ink);
+}
+
+@media (max-width: 540px) {
+  .to-story,
+  .to-story:hover {
+    top: 4px;
+    left: 4px;
+    width: 44px;
+    padding: 0;
+  }
+}
+
+/* synthesis + patterns: feelings as soft orbs */
+.feel-orbs {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.feel-orbs.is-large {
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.feel-orbs li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+}
+
+.feel-orb {
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 42%, var(--feel) 0 38%, color-mix(in srgb, var(--feel) 55%, transparent) 58%, transparent 72%);
+  filter: saturate(1.35) blur(1.5px);
+}
+
+.feel-orbs .feel-word {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.1;
+  color: var(--color-ink);
+}
+
+.feel-orbs .feel-share {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+}
+
+.theme-lines {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.theme-lines .spark {
+  margin: 0 10px 0 0;
+}
+
+.theme-lines--big {
+  gap: 14px;
+  font-size: 22px;
+}
+
+.refl {
+  margin-top: 34px;
+}
+
+/* patterns: fewer things, more air */
+.pat-scroll {
+  gap: 48px;
+  padding: 36px 24px 64px;
+}
+
+.pat-block {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pat-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-muted);
+}
+
+.emap {
+  padding: 8px 4px 30px 30px;
+  background: none;
+  border-radius: 0;
+}
+
+.emap-axis {
+  left: 0;
+  top: 8px;
+  bottom: 30px;
+}
+
+.emap-days {
+  left: 30px;
+  right: 4px;
+  bottom: 4px;
+  padding: 0 calc(20 / 340 * 100% - 4px);
+}
+
+.feel-orbs.is-large {
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.feel-orbs.is-large li {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.blob[data-blob="water"] {
+  top: 552px;
+}
+
+.arrival {
+  top: 694px;
+  font-size: 15px;
+}

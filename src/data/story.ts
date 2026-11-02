@@ -37,8 +37,9 @@ export interface HomeNote {
 
 // 1 minute sits clearly smaller than the current two-minute orb; longer notes grow from there.
 export function orbScale(minutes: number): number {
-  const clamped = Math.min(6, Math.max(0.5, minutes));
-  return Math.round((0.52 + clamped * 0.24) * 100) / 100;
+  // one minute is small, six minutes or more is the largest orb
+  const clamped = Math.min(6, Math.max(1, minutes));
+  return Math.round((0.6 + (clamped - 1) * 0.16) * 100) / 100;
 }
 
 export interface LooseEnd {
@@ -110,7 +111,7 @@ export const story = {
   home: {
     title: "Home",
     notes: [
-      { id: "slow-start", label: "slow start, good finish", meta: "Tue · 2 min", minutes: 2, colors: ["cream", "rose"] },
+      { id: "slow-start", label: "slow start, good finish", meta: "Tue · 6 min", minutes: 6, colors: ["cream", "rose"] },
       { id: "water", label: "run by the water", meta: "Wed · 1 min", minutes: 1, colors: ["sky", "sage"] },
       { id: "meetings", label: "too many meetings", meta: "Thu · 3 min", minutes: 3, colors: ["apricot", "rose"], recorded: true },
     ] satisfies HomeNote[],
@@ -135,28 +136,19 @@ export const story = {
     duration: "2:38",
     throughline: "2 loose ends parked. Nothing urgent before 9am tomorrow.",
     tabs: [
-      { id: "reflection", label: "Reflection" },
+      { id: "synthesis", label: "Synthesis" },
       { id: "transcript", label: "Transcript" },
     ],
-    reflection: {
+    synthesis: {
       feelingsLabel: "Feelings",
       feelings: [
         { word: "tense", color: "rose", share: 46 },
         { word: "drained", color: "rose", share: 28 },
         { word: "clear", color: "apricot", share: 26 },
       ] as Feeling[],
-      editHint: "Tags are suggestions. Tap one to change it.",
-      quoteLabel: "In your words",
-      quote: "I didn't open Figma once.",
       themesLabel: "Themes",
       themes: ["Other people's agendas", "Unfinished work", "Closing the laptop"],
       parkedLabel: "Loose ends",
-      threadsLabel: "Threads",
-      threads: [
-        { text: "The onboarding rework", count: "3rd note this week" },
-        { text: "Getting back to people", count: "2nd note this week" },
-      ],
-      sources: "Read: Google Calendar (today's calls), Slack #acme-review. Nothing else.",
     },
     transcript:
       "okay so. that was six calls. six. I didn't open Figma once, which is… yeah. um. the onboarding thing came up again in the Acme call and Daniel's being kind of vague, but basically it needs reworking, probably by Monday? I don't know. I'll look at it properly tomorrow. not tonight. oh, and Leah asked about the offsite like two days ago and I still haven't replied. I keep reading it and then going into another call. ugh. okay. anyway, I'm closing the laptop. that's it.",
@@ -269,7 +261,7 @@ export const story = {
     ],
     axisHigh: "wired",
     axisLow: "settled",
-    feelingsLabel: "Feelings this week",
+    feelingsLabel: "How the week felt",
     feelings: [
       { word: "tense", color: "rose", share: 38 },
       { word: "calm", color: "sky", share: 24 },
@@ -278,10 +270,6 @@ export const story = {
     ] as Feeling[],
     themesLabel: "Overarching themes",
     themes: ["Work spilling into evenings", "Small wins", "Wanting quiet"],
-    threadsLabel: "Continuous threads",
-    threads: ["The onboarding rework keeps coming back", "Replies you're putting off"],
-    newLabel: "New directions",
-    newer: ["Evenings after a run read calmer"],
   },
 
   settings: {

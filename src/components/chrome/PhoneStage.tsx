@@ -14,11 +14,10 @@ interface Props {
 export default function PhoneStage({ phoneRef, restartLabel, onRestart, dragging, children }: Props) {
   return (
     <main className="stage">
-      <a className="to-story" href="/">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <a className="to-story" href="/" aria-label="Back to the story">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span>Story</span>
       </a>
       <RestartButton label={restartLabel} onRestart={onRestart} />
       <MobileFrame phoneRef={phoneRef} dragging={dragging}>

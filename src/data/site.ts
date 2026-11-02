@@ -47,7 +47,8 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — Recording. bloom's petals open. A peach orb grows with Sam's voice, the timer runs and words drift past. Sam taps stop.",
+    caption: "Recording: a peach orb grows with Sam's voice, the timer runs and words drift past. Sam taps stop.",
+    src: "/assets/story/recording.mp4",
     pill: {
       label: "why talk it out",
       title: "why talk it out",
@@ -72,13 +73,14 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — Note. Feelings tagged “tense”, “drained”, “clear”, each in its own colour. A line in Sam's words, the themes, two loose ends, and the threads back to earlier notes.",
+    caption: "The synthesis of Sam's note: feelings as soft orbs sized by how much of the note they held, the themes, and two loose ends. Then the messy transcript.",
+    src: "/assets/story/note.mp4",
     pill: {
       label: "emotion tagging",
       title: "emotion tagging",
       body: [
-        "Every note is tagged with the feelings in it, close to the words Sam used. Each feeling has a colour, so a note's orb becomes a quick read of the day: apricot for clarity, rose for tension.",
-        "The tags are suggestions. Tap one to change it. There's no chat and no advice. bloom holds up a mirror; it doesn't answer back.",
+        "Every note is tagged with the feelings in it, close to the words Sam used. Each feeling has a colour and a size, so a note's orb becomes a quick read of the day: apricot for clarity, rose for tension. The longer the note, the bigger the orb.",
+        "There's no chat and no advice. bloom holds up a mirror; it doesn't answer back.",
       ],
     },
   },
@@ -88,7 +90,8 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — Home. The new orb settles beside the week's notes and two dots appear inside it. “2 loose ends parked. Nothing urgent before 9am tomorrow.”",
+    caption: "Home: the new orb settles beside the week's notes and two dots appear inside it.",
+    src: "/assets/story/arrival.mp4",
   },
   { kind: "divider" },
   {
@@ -98,13 +101,14 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — This week. An emotion map with one dot per note. How the week felt, in colour. Overarching themes, continuous threads and new directions.",
+    caption: "This week: an emotion map with one orb per note, how the week felt, and its overarching themes.",
+    src: "/assets/story/patterns.mp4",
     pill: {
       label: "patterns over time",
       title: "patterns over time",
       body: [
         "Patterns are easier to see from a distance. bloom lays the week out as an emotion map: one dot per note, coloured by feeling, from settled to wired.",
-        "Underneath sit the overarching themes, the threads that keep coming back (“the onboarding rework keeps coming back”), and new directions worth noticing (“evenings after a run read calmer”). Observations, never instructions.",
+        "Underneath: how the week felt, as orbs sized by how much of it each feeling held, and the overarching themes, like “work spilling into evenings”. Observations, never instructions.",
       ],
     },
   },
@@ -112,17 +116,18 @@ export const story: Block[] = [
   {
     kind: "line",
     label: "context, with consent",
-    text: ["It knew “the onboarding thing” meant Daniel's Slack thread, and it says exactly what it read."],
+    text: ["It knew “the onboarding thing” meant Daniel's Slack thread, because Sam chose to let it look."],
   },
   {
     kind: "phone",
-    caption: "GIF — Sources. The note scrolls to its last line: “Read: Google Calendar (today's calls), Slack #acme-review. Nothing else.”",
+    caption: "Settings: each app bloom can read has its own switch. Gmail stays off.",
+    src: "/assets/story/context.mp4",
     pill: {
       label: "context awareness",
       title: "context awareness",
       body: [
         "bloom reads the calendar, Slack and Notion you connect, so a vague “the onboarding thing” becomes Daniel's request and its Monday deadline. The lamp adds when and where you spoke.",
-        "It only reads. It never posts, replies or edits. Each source has its own switch, and every note lists what bloom looked at.",
+        "It only reads. It never posts, replies or edits, and each app has its own switch in Settings.",
       ],
     },
   },
@@ -135,7 +140,8 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — Calendar. Home eases back as the week slides over it. Faded meetings carry Google Calendar and Notion tags. The tray holds two loose ends.",
+    caption: "Home eases back as the week slides over it. Faded meetings carry Google Calendar and Notion tags. The tray holds two loose ends.",
+    src: "/assets/story/calendar.mp4",
     pill: {
       label: "parking loose ends",
       title: "parking loose ends",
@@ -151,7 +157,8 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — Drag. A loose end lifts from the tray and follows Sam's finger. Friday lights up and a “Let go” bin waits below. “Nothing parked. You're clear.”",
+    caption: "A loose end lifts from the tray and follows Sam's finger onto Friday, past the “Let go” bin.",
+    src: "/assets/story/drag.mp4",
   },
   { kind: "divider" },
   {
@@ -161,7 +168,8 @@ export const story: Block[] = [
   },
   {
     kind: "phone",
-    caption: "GIF — Day view. Two dashed suggestions, each with a reason. Sam taps ✓ on both. Back in the week, each block is as tall as it is long.",
+    caption: "Friday: two dashed suggestions, each with a reason. Sam accepts both. Back in the week, each block is as tall as it is long.",
+    src: "/assets/story/day.mp4",
     pill: {
       label: "full autonomy",
       title: "full autonomy",

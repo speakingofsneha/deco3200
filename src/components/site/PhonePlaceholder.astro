@@ -10,7 +10,12 @@ const isVideo = src?.endsWith(".mp4") || src?.endsWith(".webm");
 ---
 
 <figure data-reveal class="phone mx-auto" aria-label={caption}>
-  {src && isVideo && <video class="phone-media" src={src} autoplay muted loop playsinline />}
+  {src && isVideo && (
+    <video class="phone-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      {src.endsWith(".mp4") && <source src={src.replace(/\.mp4$/, ".webm")} type="video/webm" />}
+      <source src={src} type={src.endsWith(".mp4") ? "video/mp4" : "video/webm"} />
+    </video>
+  )}
   {src && !isVideo && <img class="phone-media" src={src} alt={caption} />}
   {!src && (
     <>

@@ -1,8 +1,8 @@
-// the week at a distance: an emotion map (one dot per note), how the week felt,
-// and the themes and threads that keep coming back. no advice, just patterns.
+// the week at a distance: an emotion map (one orb per note), how the week felt,
+// and its overarching themes. no advice, just patterns, with room to breathe.
 import { story } from "../../data/story";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
-import { feelingColor } from "./NoteScreen";
+import FeelingOrbs from "./FeelingOrbs";
 import Sheet from "./Sheet";
 
 interface Props {
@@ -11,9 +11,9 @@ interface Props {
 }
 
 const W = 340;
-const H = 168;
-const padX = 18;
-const padY = 18;
+const H = 200;
+const padX = 20;
+const padY = 30;
 
 export default function PatternsScreen({ state, actions }: Props) {
   const p = story.patterns;
@@ -34,32 +34,21 @@ export default function PatternsScreen({ state, actions }: Props) {
         </h1>
       </header>
 
-      <div className="settings-scroll" id="patterns-scroll">
-        <div className="range" role="group" aria-label="Time range">
-          {p.ranges.map((r, i) => (
-            <span key={r} className={i === 0 ? "range-opt is-on" : "range-opt"} aria-current={i === 0 ? "true" : undefined}>
-              {r}
-            </span>
-          ))}
-        </div>
-
-        <section className="set-group" aria-labelledby="pat-map">
-          <h2 className="eyebrow" id="pat-map">{p.mapLabel}</h2>
+      <div className="settings-scroll pat-scroll" id="patterns-scroll">
+        <section className="pat-block" aria-labelledby="pat-map">
+          <h2 className="pat-label" id="pat-map">{p.mapLabel}</h2>
           <div className="emap">
             <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${p.mapLabel}. ${dots.map((d) => d.label).join(", ")}`}>
               <defs>
-                <filter id="emap-soft" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="6" />
+                <filter id="emap-soft" x="-80%" y="-80%" width="260%" height="260%">
+                  <feGaussianBlur stdDeviation="9" />
                 </filter>
               </defs>
-              {p.days.map((d, i) => (
-                <line key={d} x1={x(i)} x2={x(i)} y1={padY - 6} y2={H - padY + 6} stroke="var(--color-line-soft)" strokeWidth="1" />
-              ))}
-              <path d={line} fill="none" stroke="var(--color-ink)" strokeWidth="0.8" strokeDasharray="2 3" opacity="0.5" />
+              <path d={line} fill="none" stroke="var(--color-ink)" strokeWidth="0.8" strokeDasharray="2 4" opacity="0.45" />
               {dots.map((d) => (
                 <g key={d.id} className={d.recorded && state.arrived ? "emap-dot is-new" : "emap-dot"}>
-                  <circle cx={x(d.day)} cy={y(d.y)} r="16" style={{ fill: `var(--color-${d.color})` }} filter="url(#emap-soft)" opacity="0.9" />
-                  <circle cx={x(d.day)} cy={y(d.y)} r="4" fill="var(--color-ink)" />
+                  <circle cx={x(d.day)} cy={y(d.y)} r="22" style={{ fill: `var(--color-${d.color})` }} filter="url(#emap-soft)" />
+                  <circle cx={x(d.day)} cy={y(d.y)} r="3.5" fill="var(--color-ink)" />
                 </g>
               ))}
             </svg>
@@ -69,61 +58,27 @@ export default function PatternsScreen({ state, actions }: Props) {
             </div>
             <div className="emap-days" aria-hidden="true">
               {p.days.map((d) => (
-                <span key={d}>{d}</span>
+                <span key={d}>{d.slice(0, 1)}</span>
               ))}
             </div>
           </div>
-          <p className="refl-hint">{p.mapHint}</p>
         </section>
 
-        <section className="set-group" aria-labelledby="pat-feel">
-          <h2 className="eyebrow" id="pat-feel">{p.feelingsLabel}</h2>
-          <ul className="feel-rows">
-            {p.feelings.map((f) => (
-              <li key={f.word} style={feelingColor(f.color)}>
-                <span className="feel-word">
-                  <span className="feel-dot" aria-hidden="true" />
-                  {f.word}
-                </span>
-                <span className="feel-track" aria-hidden="true">
-                  <span style={{ width: `${f.share}%` }} />
-                </span>
-                <span className="feel-share">{f.share}%</span>
-              </li>
-            ))}
-          </ul>
+        <section className="pat-block" aria-labelledby="pat-feel">
+          <h2 className="pat-label" id="pat-feel">{p.feelingsLabel}</h2>
+          <FeelingOrbs feelings={p.feelings} large />
         </section>
 
-        <section className="set-group" aria-labelledby="pat-themes">
-          <h2 className="eyebrow" id="pat-themes">{p.themesLabel}</h2>
-          <p className="themes themes--big">
-            {p.themes.map((t, i) => (
-              <span key={t}>
-                {i > 0 && (
-                  <span className="spark" aria-hidden="true">
-                    ✦
-                  </span>
-                )}
+        <section className="pat-block" aria-labelledby="pat-themes">
+          <h2 className="pat-label" id="pat-themes">{p.themesLabel}</h2>
+          <ul className="theme-lines theme-lines--big">
+            {p.themes.map((t) => (
+              <li key={t}>
+                <span className="spark" aria-hidden="true">
+                  ✦
+                </span>
                 {t}
-              </span>
-            ))}
-          </p>
-        </section>
-
-        <section className="set-group" aria-labelledby="pat-threads">
-          <h2 className="eyebrow" id="pat-threads">{p.threadsLabel}</h2>
-          <ul className="pat-list">
-            {p.threads.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="set-group" aria-labelledby="pat-new">
-          <h2 className="eyebrow" id="pat-new">{p.newLabel}</h2>
-          <ul className="pat-list">
-            {p.newer.map((t) => (
-              <li key={t}>{t}</li>
+              </li>
             ))}
           </ul>
         </section>

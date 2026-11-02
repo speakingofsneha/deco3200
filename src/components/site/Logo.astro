@@ -1,12 +1,12 @@
 ---
-// bloom's wordmark: a seed resting on the ground, then the name.
+// bloom's mark (𖧷, a four-petal flower) and the name.
 interface Props {
   size?: number;
 }
 const { size = 40 } = Astro.props;
 ---
 
-<span class="wordmark" style={`font-size:${size}px`} role="img" aria-label="Bloom">
-  <span class="wordmark-seed" aria-hidden="true"></span>
+<span class="wordmark" style={`font-size:${size}px`} role="img" aria-label="bloom">
+  <img class="wordmark-mark" src="/assets/logo.svg" alt="" aria-hidden="true" />
   <span aria-hidden="true">bloom</span>
 </span>

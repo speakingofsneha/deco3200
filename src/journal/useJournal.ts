@@ -115,7 +115,7 @@ const initialState: JournalState = {
   recSeconds: 0,
   settings: freshSettings(),
   playing: false,
-  tab: "reflection",
+  tab: "synthesis",
   menuId: null,
   toast: false,
   drag: null,
