@@ -1,4 +1,5 @@
 // one event card. imported, suggested, or a note dropped on the week.
+import { url } from "../../lib/path";
 import { calColors, type CalColor } from "../../data/story";
 import SourceTag from "./SourceTag";
 
@@ -58,10 +59,10 @@ export default function CalendarItem({
       {variant === "suggested" && !accepted && (
         <div className="cal-actions">
           <button type="button" className="icon-btn" data-accept={itemId} aria-label={acceptLabel} onClick={onAccept}>
-            <img src="/assets/check.svg" width={17} height={17} alt="" />
+            <img src={url("/assets/check.svg")} width={17} height={17} alt="" />
           </button>
           <button type="button" className="icon-btn" data-dismiss={itemId} aria-label={dismissLabel} onClick={onDismiss}>
-            <img src="/assets/close.svg" width={17} height={17} alt="" />
+            <img src={url("/assets/close.svg")} width={17} height={17} alt="" />
           </button>
         </div>
       )}

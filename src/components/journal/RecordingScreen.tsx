@@ -1,4 +1,5 @@
 // talking to bloom. the orb grows as the note gets longer; words arrive as they are said.
+import { url } from "../../lib/path";
 import { story } from "../../data/story";
 import { clockOf } from "../../journal/model";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
@@ -24,7 +25,7 @@ export default function RecordingScreen({ state, actions }: Props) {
     <Sheet id="screen-recording" labelledBy="rec-title" open={open} origin={state.origin} pull={state.pull} className="rec">
       <header className="rec-head">
         <button type="button" className="back-btn" aria-label={story.recording.cancel} onClick={actions.close}>
-          <img src="/assets/close.svg" width={18} height={18} alt="" />
+          <img src={url("/assets/close.svg")} width={18} height={18} alt="" />
         </button>
         <h1 id="rec-title" tabIndex={-1} className="rec-status">
           <span className={sorting ? "rec-light is-done" : "rec-light"} aria-hidden="true" />

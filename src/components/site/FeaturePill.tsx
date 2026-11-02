@@ -1,4 +1,5 @@
 // a small pill under a phone. it opens a sheet that explains the feature.
+import { url } from "../../lib/path";
 import { useEffect, useId, useRef, useState } from "react";
 
 interface Props {
@@ -65,7 +66,7 @@ export default function FeaturePill({ label, title, body, refs }: Props) {
               aria-label="Close"
               onClick={() => setOpen(false)}
             >
-              <img src="/assets/close.svg" width={12} height={12} alt="" />
+              <img src={url("/assets/close.svg")} width={12} height={12} alt="" />
             </button>
             <h3 id={headingId} className="font-serif text-[1.5rem] leading-[1.875rem] text-ink sm:text-[1.75rem] sm:leading-[2.125rem]">
               {title}

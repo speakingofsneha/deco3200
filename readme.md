@@ -51,3 +51,11 @@ The phone’s radius, border, and shadow, and the glass card behind it, live in 
 ## story site
 
 Each phone on `/` is a placeholder. To drop in a screen recording, add the file to `public/assets/` and set `src` on that block in `src/data/site.ts` (`.gif`, `.png`, `.mp4` or `.webm`). The lamp photo and the closing film work the same way.
+
+
+## deploy
+
+The site publishes to GitHub Pages at https://speakingofsneha.github.io/deco3200/ from `main`, via `.github/workflows/deploy.yml`.
+
+- `astro.config.mjs` sets `base: '/deco3200'`, so locally it runs at http://localhost:4321/deco3200/.
+- Every root-relative link or asset goes through `url()` from `src/lib/path.ts` so it picks up that base. Use it for any new `/assets/...` path or internal link.

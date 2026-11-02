@@ -1,4 +1,5 @@
 ---
+import { url } from "../../lib/path";
 // a phone that will hold a screen recording. until `src` is set it
 // shows a labelled placeholder describing the gif that goes here.
 interface Props {
@@ -22,9 +23,9 @@ const isVideo = src?.endsWith(".mp4") || src?.endsWith(".webm");
       <div class="phone-status" aria-hidden="true">
         <span>6:42</span>
         <span class="flex items-center gap-1">
-          <img src="/assets/signal.svg" alt="" />
-          <img src="/assets/wifi.svg" alt="" />
-          <img src="/assets/battery.svg" alt="" />
+          <img src={url("/assets/signal.svg")} alt="" />
+          <img src={url("/assets/wifi.svg")} alt="" />
+          <img src={url("/assets/battery.svg")} alt="" />
         </span>
       </div>
       <figcaption class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-3 px-7 text-center">
