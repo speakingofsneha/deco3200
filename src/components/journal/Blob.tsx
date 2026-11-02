@@ -1,5 +1,6 @@
 // a voice note on home: an orb, a dotted leader, and a serif label.
-import type { OrbColor } from "../../data/story";
+import type { CSSProperties } from "react";
+import { orbScale, type OrbColor } from "../../data/story";
 import Orb from "./Orb";
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
   index: number;
   label: string;
   meta: string;
+  minutes: number;
   colors: [OrbColor, OrbColor];
   dots: number;
   ariaLabel: string;
@@ -15,7 +17,7 @@ interface Props {
   onOpen?: (from: Element) => void;
 }
 
-export default function Blob({ id, index, label, meta, colors, dots, ariaLabel, opens = false, arriving = false, onOpen }: Props) {
+export default function Blob({ id, index, label, meta, minutes, colors, dots, ariaLabel, opens = false, arriving = false, onOpen }: Props) {
   return (
     <button
       type="button"
@@ -25,6 +27,7 @@ export default function Blob({ id, index, label, meta, colors, dots, ariaLabel, 
       data-open-note={opens ? id : undefined}
       aria-label={ariaLabel}
       aria-disabled={opens ? undefined : true}
+      style={{ "--orb": orbScale(minutes) } as CSSProperties}
       onClick={opens && onOpen ? (event) => onOpen(event.currentTarget) : undefined}
     >
       <Orb className="blob-orb" colors={colors} dots={dots} variant={index} seed={index * 11 + 3} />

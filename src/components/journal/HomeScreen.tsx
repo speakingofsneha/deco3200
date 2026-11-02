@@ -1,5 +1,5 @@
 // home. orbs are notes. swipe left, or use the right edge, to reach the week.
-import { blobLabel, story } from "../../data/story";
+import { blobLabel, orbScale, story } from "../../data/story";
 import { meetingsDots, type Items } from "../../journal/model";
 import type { JournalActions } from "../../journal/useJournal";
 import Blob from "./Blob";
@@ -40,6 +40,7 @@ export default function HomeScreen({ items, active, recorded, arrived, actions }
               index={index}
               label={note.label}
               meta={note.meta}
+              minutes={note.minutes}
               colors={note.colors}
               dots={dots}
               opens={Boolean(note.recorded)}

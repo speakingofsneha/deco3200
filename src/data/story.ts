@@ -11,10 +11,18 @@ export interface HomeNote {
   id: string;
   label: string;
   meta: string;
+  // length of the voice memo, in minutes. longer notes draw a larger orb.
+  minutes: number;
   // inner and outer colour of the orb's gradient
   colors: [OrbColor, OrbColor];
   // only the recorded note opens; it appears after recording
   recorded?: boolean;
+}
+
+// 1 minute sits clearly smaller than the current two-minute orb; longer notes grow from there.
+export function orbScale(minutes: number): number {
+  const clamped = Math.min(6, Math.max(0.5, minutes));
+  return Math.round((0.52 + clamped * 0.24) * 100) / 100;
 }
 
 export interface LooseEnd {
@@ -86,9 +94,9 @@ export const story = {
   home: {
     title: "Home",
     notes: [
-      { id: "slow-start", label: "slow start, good finish", meta: "Tue · 2 min", colors: ["cream", "rose"] },
-      { id: "water", label: "run by the water", meta: "Wed · 1 min", colors: ["sky", "sage"] },
-      { id: "meetings", label: "too many meetings", meta: "Thu · 2 min", colors: ["apricot", "rose"], recorded: true },
+      { id: "slow-start", label: "slow start, good finish", meta: "Tue · 2 min", minutes: 2, colors: ["cream", "rose"] },
+      { id: "water", label: "run by the water", meta: "Wed · 1 min", minutes: 1, colors: ["sky", "sage"] },
+      { id: "meetings", label: "too many meetings", meta: "Thu · 3 min", minutes: 3, colors: ["apricot", "rose"], recorded: true },
     ] satisfies HomeNote[],
     hint: "Tap to talk",
     arrived: "2 loose ends parked. Nothing urgent before 9am tomorrow.",
@@ -222,10 +230,10 @@ export const story = {
   settings: {
     title: "Settings",
     sections: {
-      lamp: "Bloom lamp",
+      lamp: "Lamp",
       quiet: "Quiet hours",
-      context: "Context Bloom can read",
-      colours: "Loose end colours",
+      context: "Apps",
+      colours: "Colours",
       privacy: "Privacy",
     },
     lamp: {

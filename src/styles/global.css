@@ -1041,68 +1041,11 @@
   color: var(--color-body);
 }
 
-.gcal-logo,
-.notion-logo {
-  position: relative;
-  width: 22px;
-  height: 22px;
+.source-logo {
+  width: 16px;
+  height: 16px;
   flex: none;
-  display: grid;
-  place-items: center;
-  background: white;
-  overflow: hidden;
-}
-
-.gcal-num {
-  position: relative;
-  z-index: 1;
-  font-size: 13px;
-  line-height: 1;
-  color: #1967d2;
-}
-
-.gcal-edge {
-  position: absolute;
-}
-
-.gcal-edge--blue {
-  top: 0;
-  left: 0;
-  width: 22px;
-  height: 4px;
-  background: #4285f4;
-}
-
-.gcal-edge--red {
-  top: 4px;
-  left: 0;
-  width: 4px;
-  height: 14px;
-  background: #ea4335;
-}
-
-.gcal-edge--green {
-  top: 4px;
-  right: 0;
-  width: 4px;
-  height: 18px;
-  background: #34a853;
-}
-
-.gcal-edge--yellow {
-  left: 0;
-  bottom: 0;
-  width: 18px;
-  height: 4px;
-  background: #fbbc04;
-}
-
-.notion-logo {
-  border: 1px solid var(--color-body);
-  border-radius: 2px;
-  font-family: var(--font-serif);
-  font-size: 17px;
-  line-height: 1;
+  object-fit: contain;
 }
 
 .tl-event {
@@ -1590,12 +1533,14 @@
   width: 210px;
   height: 137px;
   overflow: visible;
+  transform: scale(var(--orb, 1));
+  transform-origin: center;
   transition: transform 500ms var(--ease-calm);
 }
 
 .blob[data-open-note]:hover .blob-orb,
 .blob[data-open-note]:focus-visible .blob-orb {
-  transform: scale(1.04);
+  transform: scale(calc(var(--orb, 1) * 1.04));
 }
 
 .blob[data-blob="slow-start"] {
@@ -2012,20 +1957,24 @@
   overflow: auto;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding: 28px 20px 48px;
+  padding: 22px 22px 40px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
 }
 
 .set-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .set-group .eyebrow {
-  padding-left: 4px;
+  padding-left: 2px;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-ink-muted);
 }
 
 .set-card {
@@ -2077,19 +2026,6 @@
   color: var(--color-ink-muted);
 }
 
-.set-note {
-  padding: 0 4px;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--color-ink-muted);
-}
-
-.chev {
-  font-size: 20px;
-  line-height: 1;
-  color: var(--color-ink-muted);
-}
-
 .swatch {
   width: 14px;
   height: 14px;
@@ -2097,55 +2033,16 @@
   border-radius: 50%;
 }
 
-.lamp-glyph {
-  width: 36px;
-  height: 36px;
+.app-logo {
+  width: 22px;
+  height: 22px;
   flex: none;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 50%, #fff6e4 0 18%, transparent 19%),
-    radial-gradient(circle at 50% 50%, rgb(241 223 185 / 100%), rgb(239 177 119 / 70%) 70%, transparent 72%);
-  box-shadow: 0 0 18px rgb(239 177 119 / 55%);
+  object-fit: contain;
 }
 
-.src-mark {
-  width: 28px;
-  height: 28px;
-  flex: none;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  background: #fff;
-  border: 1px solid var(--color-line-soft);
-  font-size: 13px;
-  line-height: 1;
-}
-
-.src-mark--gcal {
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    conic-gradient(#4285f4 0 25%, #34a853 0 50%, #fbbc04 0 75%, #ea4335 0) border-box;
-  border: 2px solid transparent;
-}
-
-.src-mark--slack {
-  background: conic-gradient(#36c5f0 0 25%, #2eb67d 0 50%, #ecb22e 0 75%, #e01e5a 0);
-  border: 0;
-  border-radius: 8px;
-  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 0 4px, #000 4.5px);
-  mask: radial-gradient(circle at 50% 50%, transparent 0 4px, #000 4.5px);
-}
-
-.src-mark--notion::before {
-  content: "N";
-  font-family: var(--font-serif);
-  color: var(--color-ink);
-}
-
-.src-mark--gmail {
-  background: linear-gradient(135deg, #ea4335 0 50%, #fbbc04 50% 100%);
-  border: 0;
-  opacity: 0.45;
+.set-row.is-off .app-logo,
+.set-row.is-off .set-label {
+  opacity: 0.4;
 }
 
 .toggle {
@@ -2179,11 +2076,11 @@
 }
 
 .restart-row {
-  min-height: 48px;
-  border-radius: 16px;
-  background: var(--color-surface);
-  font-size: 16px;
-  color: var(--color-ink);
+  align-self: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--color-ink-muted);
 }
 
 /* ---- loose ends wear google calendar colours ---------------------- */

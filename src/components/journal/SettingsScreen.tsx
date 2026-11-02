@@ -1,4 +1,4 @@
-// settings: the lamp, quiet hours, what bloom may read, and task colours.
+// settings. one quiet list: lamp, quiet hours, connected apps, colours.
 import { calColors, story } from "../../data/story";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
 import Sheet from "./Sheet";
@@ -35,8 +35,7 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
         <section className="set-group" aria-labelledby="set-lamp">
           <h2 className="eyebrow" id="set-lamp">{s.sections.lamp}</h2>
           <div className="set-card">
-            <div className="set-row set-row--lamp">
-              <span className="lamp-glyph" aria-hidden="true" />
+            <div className="set-row">
               <span className="set-text">
                 <span className="set-label">{s.lamp.name}</span>
                 <span className="set-detail">{s.lamp.status}</span>
@@ -64,16 +63,16 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
         <section className="set-group" aria-labelledby="set-context">
           <h2 className="eyebrow" id="set-context">{s.sections.context}</h2>
           <div className="set-card">
-            {s.sources.map((src) => (
-              <div className="set-row" key={src.id}>
-                <span className={`src-mark src-mark--${src.id}`} aria-hidden="true" />
-                <span className="set-text">
+            {s.sources.map((src) => {
+              const on = state.settings[src.id];
+              return (
+                <div className={on ? "set-row" : "set-row is-off"} key={src.id}>
+                  <img className="app-logo" src={`/assets/logos/${src.id}.svg`} alt="" width={22} height={22} />
                   <span className="set-label">{src.name}</span>
-                  <span className="set-detail">{src.detail}</span>
-                </span>
-                <Toggle id={src.id} label={src.name} on={state.settings[src.id]} onToggle={() => actions.toggleSetting(src.id)} />
-              </div>
-            ))}
+                  <Toggle id={src.id} label={src.name} on={on} onToggle={() => actions.toggleSetting(src.id)} />
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -88,7 +87,6 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
               </div>
             ))}
           </div>
-          <p className="set-note">{s.colours.note}</p>
         </section>
 
         <section className="set-group" aria-labelledby="set-privacy">
@@ -97,7 +95,6 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
             {s.privacy.map((row) => (
               <div className="set-row" key={row.id}>
                 <span className="set-label">{row.label}</span>
-                <span className="chev" aria-hidden="true">›</span>
               </div>
             ))}
           </div>
