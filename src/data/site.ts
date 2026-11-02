@@ -23,7 +23,7 @@ export const site = {
     { label: "demo", href: url("/demo") },
   ],
   intro: [
-    "bloom is a journal you talk to at the end of the workday. A lamp on your desk listens to your stream of consciousness, and a quiet app reflects it back: how you felt, what keeps coming up, and what's left to do.",
+    "Working from home took away the commute, and with it, the end of the workday. bloom is a journal you talk to when work is done: a lamp on your desk that listens, and a quiet app that reflects your day back to you.",
     "Discover bloom through Sam's evening.",
   ],
 };
@@ -31,10 +31,9 @@ export const site = {
 export const story: Block[] = [
   {
     kind: "line",
-    label: "the problem",
     text: [
-      "Sam is a designer who works from a studio flat. The desk is three steps from the bed, and the workday never quite ends.",
-      "Journaling might help. But a blank page at 7pm feels like one more task.",
+      "Sam is a designer who works from a studio flat. The desk is three steps from the bed, so the workday never really ends.",
+      "Journaling is one of the most recommended ways to unwind. But a blank page at 7pm feels like one more task.",
     ],
   },
   {
@@ -43,8 +42,7 @@ export const story: Block[] = [
   },
   {
     kind: "line",
-    label: "talking it out",
-    text: ["6:42pm. Sam closes the laptop, touches bloom, and talks. No prompts, no structure, no blank page. Just a stream of consciousness."],
+    text: ["6:42pm. Sam closes the laptop, touches bloom, and talks. No prompts, no structure. Just a stream of consciousness."],
   },
   {
     kind: "phone",
@@ -54,7 +52,7 @@ export const story: Block[] = [
       label: "why talk it out",
       title: "why talk it out",
       body: [
-        "Stream-of-consciousness journaling works because you don't have to organise anything first. But writing takes energy that's gone by the end of a long day. Speaking doesn't.",
+        "Journaling is one of the most recommended ways to process a day, and stream of consciousness is the easiest way in: nothing to organise first. But writing takes energy that's gone by evening. Speaking doesn't.",
         "Talking about a stressful experience out loud has shown benefits at least as strong as writing about it. Putting a feeling into words calms the brain's alarm response to it.",
         "And unfinished tasks keep replaying until they have a plan. Making the plan is enough to quiet them. People who wrote a specific to-do list before bed fell asleep faster.",
       ],
@@ -69,8 +67,7 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    label: "reflection, not response",
-    text: ["bloom doesn't reply. It reflects: the feelings in what Sam said, the themes underneath, and the loose ends."],
+    text: ["bloom doesn't reply. It reflects: the feelings in what Sam said, the themes underneath, and what's still unfinished."],
   },
   {
     kind: "phone",
@@ -87,7 +84,7 @@ export const story: Block[] = [
   },
   {
     kind: "line",
-    text: ["The colour of each orb is how the day felt. The dots are what's still open."],
+    text: ["Every note becomes an orb. Its colour is how the day felt, its size is how long Sam talked, and its dots are what's still open."],
   },
   {
     kind: "phone",
@@ -97,8 +94,7 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    label: "patterns over time",
-    text: ["Looking back is where journaling pays off, and the part most people skip. bloom gathers the week so Sam doesn't have to reread a thing."],
+    text: ["People rarely look back on what they've journaled, though most wish they did. bloom does the looking back, gathering the week into patterns Sam can actually see."],
   },
   {
     kind: "phone",
@@ -116,7 +112,6 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    label: "context, with consent",
     text: ["It knew “the onboarding thing” meant Daniel's Slack thread, because Sam chose to let it look."],
   },
   {
@@ -136,8 +131,7 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    label: "loose ends",
-    text: ["Next morning, Sam swipes over to the week. Two loose ends wait in the tray, in Google Calendar's colours."],
+    text: ["The next morning, the loose ends are waiting in Sam's week, in the same colours they wear in Google Calendar."],
   },
   {
     kind: "phone",
@@ -164,7 +158,6 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    label: "you decide",
     text: ["bloom suggests when. Sam decides."],
   },
   {
