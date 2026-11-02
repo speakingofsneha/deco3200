@@ -21,3 +21,4 @@ export default function PhoneStage({ phoneRef, restartLabel, onRestart, dragging
     </main>
   );
 }
+
