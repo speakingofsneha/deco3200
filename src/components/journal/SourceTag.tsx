@@ -1,4 +1,6 @@
 // where an imported event came from.
+import { url } from "../../lib/path";
+
 interface Props {
   source: "gcal" | "notion";
   name: string;
@@ -12,7 +14,7 @@ const logos = {
 export default function SourceTag({ source, name }: Props) {
   return (
     <span className="source-tag">
-      <img className="source-logo" src={logos[source]} alt="" width={16} height={16} />
+      <img className="source-logo" src={url(logos[source])} alt="" width={16} height={16} />
       <span>{name}</span>
     </span>
   );

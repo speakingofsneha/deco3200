@@ -1,4 +1,5 @@
 // a parked loose end. drag the row, or use the grip to place it.
+import { url } from "../../lib/path";
 import { calColors, letGoLabel, moveLabel, story, type CalColor } from "../../data/story";
 import type { JournalActions } from "../../journal/useJournal";
 
@@ -26,7 +27,7 @@ export default function LooseEndChip({ id, title, color, lifted, menuOpen, actio
         aria-label={moveLabel(title)}
         onClick={() => actions.toggleMenu(id)}
       >
-        <img src="/assets/grip.svg" width={16} height={16} alt="" />
+        <img src={url("/assets/grip.svg")} width={16} height={16} alt="" />
       </button>
       <div className="menu" id={`menu-${id}`} role="menu" hidden={!menuOpen}>
         {story.moveDays.map((day) => (

@@ -1,4 +1,5 @@
 // copy for the story site at /. every word on the page lives here.
+import { url } from "../lib/path";
 
 export interface Pill {
   label: string;
@@ -19,7 +20,7 @@ export const site = {
   description: "bloom, a journal you talk to at the end of the workday. A lamp on your desk listens; a quiet app reflects back your feelings, patterns and loose ends.",
   nav: [
     { label: "story", href: "#story" },
-    { label: "demo", href: "/demo" },
+    { label: "demo", href: url("/demo") },
   ],
   intro: [
     "bloom is a journal you talk to at the end of the workday. A lamp on your desk listens to your stream of consciousness, and a quiet app reflects it back: how you felt, what keeps coming up, and what's left to do.",
@@ -48,7 +49,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "Recording: a peach orb grows with Sam's voice, the timer runs and words drift past. Sam taps stop.",
-    src: "/assets/story/recording.mp4",
+    src: url("/assets/story/recording.mp4"),
     pill: {
       label: "why talk it out",
       title: "why talk it out",
@@ -74,7 +75,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "The synthesis of Sam's note: feelings as soft orbs sized by how much of the note they held, the themes, and two loose ends. Then the messy transcript.",
-    src: "/assets/story/note.mp4",
+    src: url("/assets/story/note.mp4"),
     pill: {
       label: "emotion tagging",
       title: "emotion tagging",
@@ -91,7 +92,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "Home: the new orb settles beside the week's notes and two dots appear inside it.",
-    src: "/assets/story/arrival.mp4",
+    src: url("/assets/story/arrival.mp4"),
   },
   { kind: "divider" },
   {
@@ -102,7 +103,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "This week: an emotion map with one orb per note, how the week felt, and its overarching themes.",
-    src: "/assets/story/patterns.mp4",
+    src: url("/assets/story/patterns.mp4"),
     pill: {
       label: "patterns over time",
       title: "patterns over time",
@@ -121,7 +122,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "Settings: each app bloom can read has its own switch. Gmail stays off.",
-    src: "/assets/story/context.mp4",
+    src: url("/assets/story/context.mp4"),
     pill: {
       label: "context awareness",
       title: "context awareness",
@@ -141,7 +142,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "Home eases back as the week slides over it. Faded meetings carry Google Calendar and Notion tags. The tray holds two loose ends.",
-    src: "/assets/story/calendar.mp4",
+    src: url("/assets/story/calendar.mp4"),
     pill: {
       label: "parking loose ends",
       title: "parking loose ends",
@@ -158,7 +159,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "A loose end lifts from the tray and follows Sam's finger onto Friday, past the “Let go” bin.",
-    src: "/assets/story/drag.mp4",
+    src: url("/assets/story/drag.mp4"),
   },
   { kind: "divider" },
   {
@@ -169,7 +170,7 @@ export const story: Block[] = [
   {
     kind: "phone",
     caption: "Friday: two dashed suggestions, each with a reason. Sam accepts both. Back in the week, each block is as tall as it is long.",
-    src: "/assets/story/day.mp4",
+    src: url("/assets/story/day.mp4"),
     pill: {
       label: "full autonomy",
       title: "full autonomy",
@@ -186,11 +187,11 @@ export const closing = {
   big: ["bloom holds the day,", "so you can close it."],
   film: "Film — dusk in a small studio. A laptop closes, a hand touches bloom, its petals glow, Sam talks, the light dims, and Sam walks away from the desk.",
   statement: "bloom is a concept by [team names] for DECO3200, 2026.",
-  cta: { label: "Try the demo", href: "/demo" },
+  cta: { label: "Try the demo", href: url("/demo") },
   footer: {
     links: [
-      { label: "story", href: "/" },
-      { label: "demo", href: "/demo" },
+      { label: "story", href: url("/") },
+      { label: "demo", href: url("/demo") },
     ],
     note: "© 2026 bloom · DECO3200",
   },

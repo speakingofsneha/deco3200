@@ -1,4 +1,5 @@
 // settings. one quiet list: lamp, quiet hours, connected apps, colours.
+import { url } from "../../lib/path";
 import { calColors, story } from "../../data/story";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
 import Sheet from "./Sheet";
@@ -24,7 +25,7 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
     <Sheet id="screen-settings" labelledBy="settings-title" open={state.screen === "settings"} origin={state.origin} pull={state.pull}>
       <header className="screen-head">
         <button type="button" className="back-btn" aria-label={story.ui.backHome} onClick={actions.close}>
-          <img src="/assets/back.svg" width={18} height={18} alt="" />
+          <img src={url("/assets/back.svg")} width={18} height={18} alt="" />
         </button>
         <h1 id="settings-title" tabIndex={-1}>
           {s.title}
@@ -67,7 +68,7 @@ export default function SettingsScreen({ state, actions, onRestart }: Props) {
               const on = state.settings[src.id];
               return (
                 <div className={on ? "set-row" : "set-row is-off"} key={src.id}>
-                  <img className="app-logo" src={`/assets/logos/${src.id}.svg`} alt="" width={22} height={22} />
+                  <img className="app-logo" src={url(`/assets/logos/${src.id}.svg`)} alt="" width={22} height={22} />
                   <span className="set-label">{src.name}</span>
                   <Toggle id={src.id} label={src.name} on={on} onToggle={() => actions.toggleSetting(src.id)} />
                 </div>

@@ -1,5 +1,6 @@
 // the open voice note. bloom doesn't reply; its synthesis shows
 // the feelings in what was said, the themes, and the loose ends.
+import { url } from "../../lib/path";
 import type { CSSProperties } from "react";
 import { calColors, story, type OrbColor } from "../../data/story";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
@@ -25,7 +26,7 @@ export default function NoteScreen({ state, actions }: Props) {
     <Sheet id="screen-note" labelledBy="note-title" open={state.screen === "note"} origin={state.origin} pull={state.pull}>
       <header className="screen-head">
         <button type="button" className="back-btn" id="note-back" aria-label={story.ui.backHome} onClick={actions.close}>
-          <img src="/assets/back.svg" width={18} height={18} alt="" />
+          <img src={url("/assets/back.svg")} width={18} height={18} alt="" />
         </button>
         <h1 id="note-title" tabIndex={-1}>
           {story.note.title}

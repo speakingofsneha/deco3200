@@ -1,5 +1,6 @@
 // the week at a distance: an emotion map (one orb per note), how the week felt,
 // and its overarching themes. no advice, just patterns, with room to breathe.
+import { url } from "../../lib/path";
 import { story } from "../../data/story";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
 import FeelingOrbs from "./FeelingOrbs";
@@ -26,7 +27,7 @@ export default function PatternsScreen({ state, actions }: Props) {
     <Sheet id="screen-patterns" labelledBy="patterns-title" open={state.screen === "patterns"} origin={state.origin} pull={state.pull}>
       <header className="screen-head">
         <button type="button" className="back-btn" aria-label={story.ui.backHome} onClick={actions.close}>
-          <img src="/assets/back.svg" width={18} height={18} alt="" />
+          <img src={url("/assets/back.svg")} width={18} height={18} alt="" />
         </button>
         <h1 id="patterns-title" tabIndex={-1}>
           {p.title}
