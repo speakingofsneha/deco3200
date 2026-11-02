@@ -1,11 +1,11 @@
 // a parked loose end. drag the row, or use the grip to place it.
-import { letGoLabel, moveLabel, story } from "../../data/story";
+import { calColors, letGoLabel, moveLabel, story, type CalColor } from "../../data/story";
 import type { JournalActions } from "../../journal/useJournal";
 
 interface Props {
   id: string;
   title: string;
-  color: string;
+  color: CalColor;
   lifted: boolean;
   menuOpen: boolean;
   actions: JournalActions;
@@ -13,8 +13,8 @@ interface Props {
 
 export default function LooseEndChip({ id, title, color, lifted, menuOpen, actions }: Props) {
   return (
-    <div className={lifted ? "tray-row is-lifted" : "tray-row"} data-chip={id} data-color={color}>
-      <img className="row-seed" src="/assets/seed.svg" width={4.95} height={5.5} alt="" />
+    <div className={lifted ? "tray-row is-lifted" : "tray-row"} data-chip={id} style={{ "--cal": calColors[color].hex } as React.CSSProperties}>
+      <span className="cal-dot" aria-hidden="true" />
       <span className="row-label">{title}</span>
       <button
         type="button"

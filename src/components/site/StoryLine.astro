@@ -1,6 +1,5 @@
 ---
 // a short centred serif beat of the story.
-import Brand from "./Brand.astro";
 interface Props {
   text: string[];
 }
@@ -8,5 +7,5 @@ const { text } = Astro.props;
 ---
 
 <div data-reveal class="mx-auto flex max-w-[19rem] flex-col gap-7 text-center font-serif text-[1.3125rem] leading-[1.75rem] text-ink">
-  {text.map((t) => <p><Brand text={t} /></p>)}
+  {text.map((t) => <p>{t}</p>)}
 </div>

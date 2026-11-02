@@ -1,12 +1,12 @@
 // one event card. imported, suggested, or a note dropped on the week.
+import { calColors, type CalColor } from "../../data/story";
 import SourceTag from "./SourceTag";
 
 interface Props {
   variant: "note" | "imported" | "suggested";
   title: string;
   itemId: string;
-  color?: string;
-  tint?: "sky" | "cream";
+  color?: CalColor;
   time?: string;
   source?: "gcal" | "notion";
   sourceName?: string;
@@ -25,7 +25,6 @@ export default function CalendarItem({
   title,
   itemId,
   color,
-  tint,
   time,
   source,
   sourceName,
@@ -45,10 +44,8 @@ export default function CalendarItem({
   return (
     <div
       className={classes}
-      data-color={color}
-      data-tint={tint}
       data-item={itemId}
-      style={height ? { height } : undefined}
+      style={{ ...(height ? { height } : {}), ...(color ? { "--cal": calColors[color].hex } : {}) } as React.CSSProperties}
       role={variant === "imported" ? "group" : undefined}
       aria-disabled={variant === "imported" ? true : undefined}
       aria-label={variant === "imported" ? accessibleName : undefined}

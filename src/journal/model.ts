@@ -1,14 +1,13 @@
 // pure helpers. screens use these to decide what to show.
 
-import {
-  story,
-  type DayId,
-  type LooseEnd,
-} from "../data/story";
+import { story, type DayId, type LooseEnd } from "../data/story";
 
 export const phoneWidth = 402;
+export const phoneHeight = 874;
 
-export type Screen = "home" | "note" | "week" | "day";
+// home and week live on the swipe track; the rest open over it
+export type Screen = "home" | "week" | "note" | "day" | "settings" | "recording";
+export type Overlay = Extract<Screen, "note" | "day" | "settings" | "recording">;
 export type Place = "tray" | DayId | "gone";
 export type Suggestion = "pending" | "accepted" | "dismissed";
 
@@ -25,6 +24,15 @@ export function isDayId(value: string): value is DayId {
   return dayIds.has(value);
 }
 
+export function isOverlay(screen: Screen): screen is Overlay {
+  return screen === "note" || screen === "day" || screen === "settings" || screen === "recording";
+}
+
+// the screen that sits under an overlay
+export function baseOf(screen: Screen): "home" | "week" {
+  return screen === "week" || screen === "day" ? "week" : "home";
+}
+
 export function freshItems(): Items {
   return Object.fromEntries(
     story.looseEnds.map((item) => [item.id, { place: "tray" as Place, suggestion: "pending" as Suggestion }]),
@@ -37,17 +45,18 @@ export function looseEnd(id: string): LooseEnd {
   return item;
 }
 
-export function parkedCount(items: Items): number {
+export function parkedCount(items: Items, recorded: boolean): number {
+  if (!recorded) return 0;
   return story.looseEnds.filter((item) => items[item.id]?.place === "tray").length;
 }
 
-// dots on the meetings blob follow how many of its loose ends are still parked
+// dots on the recorded note follow how many of its loose ends are still parked
 export function meetingsDots(items: Items): number {
   return story.looseEnds.filter((item) => item.noteId === "meetings" && items[item.id]?.place === "tray").length;
 }
 
 export function trackXFor(screen: Screen): number {
-  return screen === "week" || screen === "day" ? -phoneWidth : 0;
+  return baseOf(screen) === "week" ? -phoneWidth : 0;
 }
 
 export function weekOrder(item: ItemState, meta: LooseEnd): number {
@@ -55,10 +64,18 @@ export function weekOrder(item: ItemState, meta: LooseEnd): number {
   return sized ? meta.startMin : 3000 + meta.startMin;
 }
 
-export function weekCardHeight(meta: LooseEnd): number {
-  return meta.durationMin >= 60 ? 100 : 46;
+// accepted blocks grow with their length; unscheduled ones stay compact
+export function weekCardHeight(meta: LooseEnd, scheduled: boolean): number | undefined {
+  if (!scheduled) return undefined;
+  return Math.max(56, Math.round(meta.durationMin * 0.8));
 }
 
 export function dayBlockHeight(meta: LooseEnd): number {
   return meta.durationMin >= 60 ? 196 : 82;
+}
+
+export function clockOf(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
 }

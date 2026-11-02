@@ -1,26 +1,21 @@
-// record control. it only pulses, it does not record.
-import { useEffect, useRef } from "react";
-
+// the glass mic. tapping it opens the recording screen.
 interface Props {
   label: string;
-  pulse: number;
-  onPulse: () => void;
+  hint: string | null;
+  onTap: (from: Element) => void;
 }
 
-export default function GlassMic({ label, pulse, onPulse }: Props) {
-  const ref = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const mic = ref.current;
-    if (!mic || pulse === 0) return;
-    mic.classList.remove("is-pulsing");
-    void mic.offsetWidth;
-    mic.classList.add("is-pulsing");
-  }, [pulse]);
-
+export default function GlassMic({ label, hint, onTap }: Props) {
   return (
-    <button ref={ref} type="button" className="mic" id="mic" aria-label={label} onClick={onPulse}>
-      <img src="/assets/mic.svg" width={24} height={24} alt="" />
-    </button>
+    <div className="mic-wrap">
+      {hint && (
+        <span className="mic-hint" aria-hidden="true">
+          {hint}
+        </span>
+      )}
+      <button type="button" className={hint ? "mic is-inviting" : "mic"} id="mic" aria-label={label} onClick={(event) => onTap(event.currentTarget)}>
+        <img src="/assets/mic.svg" width={24} height={24} alt="" />
+      </button>
+    </div>
   );
 }

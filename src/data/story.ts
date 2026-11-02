@@ -1,28 +1,33 @@
-// copy and sample data for the journal demo.
+// copy and sample data for the bloom demo.
 
 export type DayId = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
-export type Pastel = "rose" | "apricot" | "sky";
+// orb colours come from the design system palette
+export type OrbColor = "rose" | "apricot" | "sky" | "sage" | "cream";
+// loose ends wear google calendar's event colours, so they match where they sync
+export type CalColor = "lavender" | "flamingo" | "sage" | "peacock" | "banana" | "graphite";
 export type SourceId = "gcal" | "notion";
 
 export interface HomeNote {
   id: string;
   label: string;
-  color: Pastel;
-  dots: number;
-  opens: boolean;
+  meta: string;
+  // inner and outer colour of the orb's gradient
+  colors: [OrbColor, OrbColor];
+  // only the recorded note opens; it appears after recording
+  recorded?: boolean;
 }
 
 export interface LooseEnd {
   id: string;
   noteId: string;
   title: string;
-  color: Pastel;
+  color: CalColor;
+  category: string;
   durationMin: number;
   clock: string;
   clockEnd?: string;
   // minutes from midnight
   startMin: number;
-  // minutes from 9:00, for the day timeline
   fromNine: number;
   time: string;
   reason: string;
@@ -34,18 +39,27 @@ export interface ImportedEvent {
   dayId: DayId;
   source: SourceId;
   sourceName: string;
-  tint: "sky" | "cream";
+  color: CalColor;
   time: string;
   clock: string;
   dayTitle: string;
   fromNine: number;
   durationMin: number;
-  // sort key, minutes from midnight
   order: number;
 }
 
+// google calendar's default event colours
+export const calColors: Record<CalColor, { name: string; hex: string }> = {
+  lavender: { name: "Lavender", hex: "#7986cb" },
+  flamingo: { name: "Flamingo", hex: "#e67c73" },
+  sage: { name: "Sage", hex: "#33b679" },
+  peacock: { name: "Peacock", hex: "#039be5" },
+  banana: { name: "Banana", hex: "#f6bf26" },
+  graphite: { name: "Graphite", hex: "#616161" },
+};
+
 export const story = {
-  title: "Journal",
+  title: "Bloom",
   statusTime: "6:42",
   restart: "Restart",
 
@@ -56,48 +70,43 @@ export const story = {
     openHome: "Back to Home",
     play: "Play voice note",
     pause: "Pause voice note",
-    mic: "Microphone",
+    mic: "Talk to Bloom",
     move: "Move…",
-    letGo: "Delete",
+    letGo: "Let go",
     undo: "Undo",
-    toast: "Deleted",
+    toast: "Let go",
     settings: "Settings",
     suggested: "Suggested",
     unscheduled: "Unscheduled",
     tablist: "Note sections",
     today: "Today",
+    swipeHint: "Swipe down or from the left edge to go back",
   },
 
   home: {
     title: "Home",
     notes: [
-      {
-        id: "slow-start",
-        label: "slow start, good finish",
-        color: "rose",
-        dots: 1,
-        opens: false,
-      },
-      {
-        id: "meetings",
-        label: "Too many meetings",
-        color: "apricot",
-        dots: 2,
-        opens: true,
-      },
-      {
-        id: "water",
-        label: "Run by the water",
-        color: "sky",
-        dots: 0,
-        opens: false,
-      },
+      { id: "slow-start", label: "slow start, good finish", meta: "Tue · 2 min", colors: ["cream", "rose"] },
+      { id: "water", label: "run by the water", meta: "Wed · 1 min", colors: ["sky", "sage"] },
+      { id: "meetings", label: "too many meetings", meta: "Thu · 2 min", colors: ["apricot", "rose"], recorded: true },
     ] satisfies HomeNote[],
+    hint: "Tap to talk",
+    arrived: "2 loose ends parked. Nothing urgent before 9am tomorrow.",
+  },
+
+  recording: {
+    title: "Recording",
+    listening: "Bloom is listening",
+    stop: "Stop recording",
+    cancel: "Discard recording",
+    sorting: "Sorting what you felt from what's left to do…",
+    // words appear as if spoken, a few at a time
+    live: "okay so. that was six calls. six. I didn't open Figma once, which is… yeah. the onboarding thing came up again in the Acme call. Daniel's being vague but it needs reworking, probably by Monday? not tonight. oh, and Leah asked about the offsite two days ago and I still haven't replied. ugh. okay. I'm closing the laptop.",
   },
 
   note: {
     id: "meetings",
-    title: "Too many meetings",
+    title: "too many meetings",
     duration: "2:38",
     throughline: "2 loose ends parked. Nothing urgent before 9am tomorrow.",
     tabs: [
@@ -105,16 +114,17 @@ export const story = {
       { id: "transcript", label: "Transcript" },
     ],
     synthesis: {
-      heading: "Finding home in the small things",
-      body: "New York feels full of possibility, but you’re tired of feeling like you need to keep up. Beneath the restlessness is a wish to belong — not a wish to leave.",
-      supporting:
-        "The bodega owner remembering your order felt grounding. So did calling Mom. Those ordinary moments suggest that home might grow through familiar people and small rituals, rather than one big turning point.",
-      tags: ["belonging", "small rituals", "slowing down"],
+      heading: "Running on other people's agendas",
+      body: "Six calls back to back, and the work you care about kept slipping. You sounded drained, but clear about what matters.",
+      supporting: "Two things are still on your mind: the onboarding rework for Daniel, and getting back to Leah. Both are parked. Neither needs you tonight.",
+      tags: ["drained", "back-to-back", "clarity"],
+      parkedLabel: "Parked",
       sitWithLabel: "Something to sit with",
-      sitWith: "What’s one small ritual you’d like to make yours here?",
+      sitWith: "Which one call this week could have been a message?",
+      sources: "Read: Google Calendar (today's calls), Slack #acme-review. Nothing else.",
     },
     transcript:
-      "okay so. that was six meetings. six. I didn't open Figma once, which is… yeah. um. the onboarding thing came up again in the Acme call and Daniel's being kind of vague, but basically it needs reworking, probably by Monday? I don't know. I'll look at it properly tomorrow. not tonight. oh, and Sam asked about the offsite like two days ago and I still haven't replied. I keep reading it and then going into another call. ugh. okay. anyway, I'm home. I'm putting my phone down. that's it.",
+      "okay so. that was six calls. six. I didn't open Figma once, which is… yeah. um. the onboarding thing came up again in the Acme call and Daniel's being kind of vague, but basically it needs reworking, probably by Monday? I don't know. I'll look at it properly tomorrow. not tonight. oh, and Leah asked about the offsite like two days ago and I still haven't replied. I keep reading it and then going into another call. ugh. okay. anyway, I'm closing the laptop. that's it.",
   },
 
   week: {
@@ -136,7 +146,7 @@ export const story = {
         dayId: "fri",
         source: "gcal",
         sourceName: "Google Cal",
-        tint: "sky",
+        color: "peacock",
         time: "9:30–9:45",
         clock: "9:30",
         dayTitle: "Standup · Fri 9:30",
@@ -150,7 +160,7 @@ export const story = {
         dayId: "fri",
         source: "notion",
         sourceName: "Notion",
-        tint: "cream",
+        color: "graphite",
         time: "4:00–5:00",
         clock: "4pm",
         dayTitle: "Design crit · Fri 4pm",
@@ -166,7 +176,8 @@ export const story = {
       id: "rework",
       noteId: "meetings",
       title: "Rework onboarding flow",
-      color: "rose",
+      color: "lavender",
+      category: "Deep work",
       durationMin: 150,
       clock: "10",
       clockEnd: "12:30",
@@ -176,10 +187,11 @@ export const story = {
       reason: "Longest free stretch before Monday",
     },
     {
-      id: "sam",
+      id: "leah",
       noteId: "meetings",
-      title: "Reply to Sam",
-      color: "apricot",
+      title: "Reply to Leah",
+      color: "flamingo",
+      category: "Replies",
       durationMin: 15,
       clock: "1pm",
       startMin: 780,
@@ -198,27 +210,57 @@ export const story = {
   tray: {
     one: "1 loose end parked",
     clear: "Nothing parked. You're clear.",
+    empty: "Nothing parked yet.",
   },
 
   day: {
     title: "Friday, 7 Nov",
     acceptBoth: "Accept both",
     planned: "Friday's planned. Nothing else needs you.",
-    hours: [
-      { label: "9 AM" },
-      { label: "10" },
-      { label: "11" },
-      { label: "12 PM" },
-      { label: "1" },
-      { label: "2" },
-      { label: "3" },
-      { label: "4" },
-      { label: "5 PM" },
+  },
+
+  settings: {
+    title: "Settings",
+    sections: {
+      lamp: "Bloom lamp",
+      quiet: "Quiet hours",
+      context: "Context Bloom can read",
+      colours: "Loose end colours",
+      privacy: "Privacy",
+    },
+    lamp: {
+      name: "Bloom · Sam's desk",
+      status: "Connected",
+      toggles: [
+        { id: "glow", label: "Glow when the workday ends", on: true },
+        { id: "dim", label: "Dim after a note", on: true },
+      ],
+    },
+    quiet: { label: "No suggestions or reminders", value: "6:30pm – 9am" },
+    sources: [
+      { id: "gcal", name: "Google Calendar", detail: "Reads events. Adds only what you approve.", on: true },
+      { id: "slack", name: "Slack", detail: "Reads channels you choose. Never posts.", on: true },
+      { id: "notion", name: "Notion", detail: "Reads pages you choose. Never edits.", on: true },
+      { id: "gmail", name: "Gmail", detail: "Off. Bloom can't see your email.", on: false },
     ],
+    colours: {
+      note: "Bloom uses Google Calendar's colours, so a loose end looks the same in both places.",
+      rows: [
+        { category: "Deep work", color: "lavender" as CalColor },
+        { category: "Replies", color: "flamingo" as CalColor },
+        { category: "Personal", color: "sage" as CalColor },
+      ],
+    },
+    privacy: [
+      { id: "log", label: "What Bloom read today" },
+      { id: "delete", label: "Delete all notes" },
+    ],
+    restart: "Restart demo",
   },
 };
 
-export function parkedLabel(count: number): string {
+export function parkedLabel(count: number, recorded: boolean): string {
+  if (!recorded) return story.tray.empty;
   if (count === 0) return story.tray.clear;
   if (count === 1) return story.tray.one;
   return `${count} loose ends parked`;

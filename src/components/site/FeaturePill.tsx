@@ -5,9 +5,10 @@ interface Props {
   label: string;
   title: string;
   body: string[];
+  refs?: string[];
 }
 
-export default function FeaturePill({ label, title, body }: Props) {
+export default function FeaturePill({ label, title, body, refs }: Props) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
@@ -74,6 +75,13 @@ export default function FeaturePill({ label, title, body }: Props) {
                 <p key={p}>{p}</p>
               ))}
             </div>
+            {refs && refs.length > 0 && (
+              <ul className="mt-10 flex list-none flex-col gap-2 border-t border-line-soft p-0 pt-5 font-sans text-footnote text-ink-muted">
+                {refs.map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       )}

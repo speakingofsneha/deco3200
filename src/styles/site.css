@@ -183,3 +183,39 @@ body.site {
     animation: none;
   }
 }
+
+/* wordmark: a seed resting on the ground, then the name */
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.12em;
+  font-family: var(--font-sans);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-ink);
+}
+.wordmark-seed {
+  position: relative;
+  width: 0.36em;
+  height: 0.62em;
+  flex: none;
+}
+.wordmark-seed::before {
+  content: "";
+  position: absolute;
+  left: 0.04em;
+  top: 0.08em;
+  width: 0.2em;
+  height: 0.2em;
+  border-radius: 50%;
+  background: currentColor;
+}
+.wordmark-seed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0.36em;
+  height: 0.075em;
+  background: currentColor;
+}

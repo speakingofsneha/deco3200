@@ -1,6 +1,6 @@
 ---
 // the story site. sam's evening and morning with bloom, told one beat at a time.
-// the click-through prototype lives at /prototype.
+// the click-through demo lives at /demo.
 import Site from "../layouts/Site.astro";
 import StoryLine from "../components/site/StoryLine.astro";
 import BigLine from "../components/site/BigLine.astro";
@@ -8,7 +8,6 @@ import PhonePlaceholder from "../components/site/PhonePlaceholder.astro";
 import MediaPlaceholder from "../components/site/MediaPlaceholder.astro";
 import Divider from "../components/site/Divider.astro";
 import Logo from "../components/site/Logo.astro";
-import Brand from "../components/site/Brand.astro";
 import FeaturePill from "../components/site/FeaturePill";
 import { site, story, closing } from "../data/site";
 ---
@@ -23,7 +22,7 @@ import { site, story, closing } from "../data/site";
   <main class="px-4">
     <!-- intro -->
     <section class="mx-auto flex min-h-[86vh] max-w-[21rem] flex-col items-center justify-center gap-8 text-center">
-      <div data-reveal><Logo size={34} /></div>
+      <div data-reveal><Logo size={44} /></div>
       {site.intro.map((t) => (
         <p data-reveal class="font-sans text-[1.1875rem] leading-[1.625rem] text-ink">{t}</p>
       ))}
@@ -51,7 +50,7 @@ import { site, story, closing } from "../data/site";
             <PhonePlaceholder caption={b.caption} src={b.src} />
             {b.pill && (
               <div data-reveal>
-                <FeaturePill client:visible label={b.pill.label} title={b.pill.title} body={b.pill.body} />
+                <FeaturePill client:visible label={b.pill.label} title={b.pill.title} body={b.pill.body} refs={b.pill.refs} />
               </div>
             )}
           </div>
@@ -65,7 +64,7 @@ import { site, story, closing } from "../data/site";
       <MediaPlaceholder variant="film" caption={closing.film} />
       <div class="flex flex-col items-center gap-10">
         <p data-reveal class="max-w-[24rem] text-center font-sans text-[1.75rem] leading-[2.25rem] text-ink">
-          <Brand text={closing.statement} />
+          {closing.statement}
         </p>
         <a data-reveal class="pill justify-center" href={closing.cta.href}>{closing.cta.label}</a>
       </div>

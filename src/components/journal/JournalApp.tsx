@@ -1,10 +1,14 @@
-// the four screens, plus the drag ghost, let-go bin, and undo toast.
-import { story } from "../../data/story";
-import { looseEnd } from "../../journal/model";
+// every screen, plus the drag ghost, let-go bin, and undo toast.
+// home and week share a swipe track; the week slides over home while home eases back.
+import type { CSSProperties } from "react";
+import { calColors, story } from "../../data/story";
+import { isOverlay, looseEnd, phoneWidth } from "../../journal/model";
 import type { JournalActions, JournalState } from "../../journal/useJournal";
 import DayScreen from "./DayScreen";
 import HomeScreen from "./HomeScreen";
 import NoteScreen from "./NoteScreen";
+import RecordingScreen from "./RecordingScreen";
+import SettingsScreen from "./SettingsScreen";
 import WeekScreen from "./WeekScreen";
 
 interface Props {
@@ -17,22 +21,52 @@ export default function JournalApp({ state, actions }: Props) {
   const ghost = dragging ? looseEnd(dragging.id) : null;
   const letGoClass = ["letgo", dragging ? "is-on" : "", dragging?.overBin ? "is-hot" : ""].filter(Boolean).join(" ");
 
+  // 0 on home, 1 on the week
+  const progress = Math.min(1, Math.max(0, -state.trackX / phoneWidth));
+  const still = state.trackLive || !state.ready;
+  const homeStyle = {
+    transform: `translate3d(${progress * phoneWidth * 0.72}px, 0, 0) scale(${1 - progress * 0.06})`,
+    opacity: 1 - progress * 0.45,
+    borderRadius: `${progress * 28}px`,
+    transition: still ? "none" : undefined,
+  } as CSSProperties;
+
   return (
     <>
       <div className="app" id="app">
         <div
-          className={state.screen === "note" || state.screen === "day" ? "track is-covered" : "track"}
+          className="track"
           id="track"
           style={{
             transform: `translate3d(${state.trackX}px, 0, 0)`,
-            transition: state.trackLive || !state.ready ? "none" : undefined,
+            transition: still ? "none" : undefined,
           }}
         >
-          <HomeScreen items={state.items} active={state.screen === "home"} pulse={state.pulse} actions={actions} />
-          <WeekScreen items={state.items} active={state.screen === "week"} menuId={state.menuId} drag={state.drag} actions={actions} />
+          <div className="pane-slot pane-slot--home" style={homeStyle}>
+            <HomeScreen
+              items={state.items}
+              active={state.screen === "home"}
+              recorded={state.recorded}
+              arrived={state.arrived}
+              actions={actions}
+            />
+          </div>
+          <div className="pane-slot pane-slot--week" style={{ boxShadow: `-24px 0 48px rgb(40 34 24 / ${0.1 * (1 - Math.abs(progress - 0.5) * 2) + 0.02})` }}>
+            <WeekScreen
+              items={state.items}
+              recorded={state.recorded}
+              active={state.screen === "week"}
+              menuId={state.menuId}
+              drag={state.drag}
+              actions={actions}
+            />
+          </div>
         </div>
-        <NoteScreen open={state.screen === "note"} playing={state.playing} tab={state.tab} actions={actions} />
-        <DayScreen open={state.screen === "day"} items={state.items} actions={actions} />
+        <div className={isOverlay(state.screen) ? "scrim is-on" : "scrim"} aria-hidden="true" style={state.pull ? { opacity: Math.max(0, 1 - Math.max(state.pull.x, state.pull.y) / 300), transition: "none" } : undefined} />
+        <NoteScreen state={state} actions={actions} />
+        <DayScreen state={state} actions={actions} />
+        <SettingsScreen state={state} actions={actions} onRestart={actions.restart} />
+        <RecordingScreen state={state} actions={actions} />
       </div>
 
       <div id="letgo" className={letGoClass} aria-hidden="true">
@@ -59,7 +93,7 @@ export default function JournalApp({ state, actions }: Props) {
       </div>
 
       {ghost && dragging && (
-        <div className="ghost" data-color={ghost.color} style={{ left: dragging.x, top: dragging.y }}>
+        <div className="ghost" style={{ left: dragging.x, top: dragging.y, "--cal": calColors[ghost.color].hex } as CSSProperties}>
           <span className="ghost-grip" aria-hidden="true" />
           <span>{ghost.title}</span>
         </div>

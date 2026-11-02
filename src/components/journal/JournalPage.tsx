@@ -1,4 +1,4 @@
-// journal page. one react tree: the phone card, status bar, and the four screens.
+// bloom demo. one react tree: the phone card, status bar, and every screen.
 import { useRef } from "react";
 import { story } from "../../data/story";
 import { useJournal } from "../../journal/useJournal";

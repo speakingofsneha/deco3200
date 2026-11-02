@@ -1,10 +1,10 @@
 // copy for the story site at /. every word on the page lives here.
-// the word "Bloom" is set in the sans wherever it appears in serif copy.
 
 export interface Pill {
   label: string;
   title: string;
   body: string[];
+  refs?: string[];
 }
 
 export type Block =
@@ -16,108 +16,124 @@ export type Block =
 
 export const site = {
   title: "Bloom",
-  description:
-    "Bloom is a calm thought partner that lives on your desk as a flower-shaped lamp.",
+  description: "Bloom is a lamp on your desk and a quiet app on your phone. Talk out the day, and Bloom holds what's left.",
   nav: [
-    { label: "About", href: "#about" },
-    { label: "Prototype", href: "/prototype" },
+    { label: "Story", href: "#story" },
+    { label: "Demo", href: "/demo" },
   ],
   intro: [
-    "Bloom is a calm thought partner that lives on your desk as a flower-shaped lamp. It helps you leave work at work, even when work is at home.",
-    "Discover Bloom through Sam's story.",
+    "Bloom is a lamp on your desk and a quiet app on your phone. Talk out the day. Bloom holds what's left, so you can switch off.",
+    "Discover Bloom through Sam's evening.",
   ],
 };
 
 export const story: Block[] = [
   {
     kind: "line",
-    text: [
-      "Sam is a product designer who works from a small studio.",
-      "Their desk is three steps from their bed, and work never quite ends.",
-    ],
+    text: ["Sam is a designer who works from a studio flat.", "The desk is three steps from the bed. Nothing marks the end of the day."],
   },
   {
     kind: "photo",
-    caption: "Photo — Bloom on Sam's desk at dusk, beside a closed laptop and a mug. Its petals glow softly.",
+    caption: "Photo — Bloom on Sam's desk at dusk, beside a closed laptop. Its petals glow softly.",
   },
-  {
-    kind: "line",
-    text: ["It's 6:42pm. Sam closes the laptop, touches Bloom, and talks."],
-  },
+  { kind: "line", text: ["6:42pm. Sam closes the laptop, touches Bloom, and talks."] },
   {
     kind: "phone",
-    caption:
-      "GIF — Recording in the lamp. Bloom's petals open as Sam speaks. A peach blob breathes and grows, 2:38, “Listening… via Bloom”. The petals close and the light dims.",
+    caption: "GIF — Recording. Bloom's petals open. A peach orb grows with Sam's voice, the timer runs and words drift past. Sam taps stop.",
     pill: {
-      label: "Bloom, the lamp",
-      title: "Bloom, the lamp",
+      label: "Why talk it out",
+      title: "Why talk it out",
       body: [
-        "When home is also the office, nothing tells your brain the day is over. Bloom is that signal.",
-        "Touch it to talk the day out. When its light warms and dims, work is done. There is no screen and no notifications, and it only listens when you touch it.",
+        "Unfinished tasks keep replaying in your head until they have a plan. Making the plan is enough to quiet them, even before anything is done. People who wrote a specific to-do list before bed fell asleep faster than people who wrote about what they'd finished.",
+        "Putting a feeling into words calms the brain's alarm response to it. And it doesn't have to be written: talking about a stressful experience out loud has shown benefits at least as strong as writing about it.",
+        "Bloom uses both at the moment you're least likely to do either, the end of a long day, when typing feels like more work. You talk. Bloom writes the plan.",
       ],
-    },
-  },
-  { kind: "divider" },
-  { kind: "line", text: ["The ramble becomes a note."] },
-  {
-    kind: "phone",
-    caption:
-      "GIF — Home. The peach blob settles among the week's notes. Two black dots appear, one for each loose end. Label: Too many meetings.",
-    pill: {
-      label: "Loose ends",
-      title: "Loose ends",
-      body: [
-        "Every dot inside a note is a loose end Bloom noticed: something you said you'd do, or someone you need to get back to.",
-        "There are never more than three per note, so one glance tells you how much a day left behind, without opening anything.",
+      refs: [
+        "Masicampo & Baumeister (2011), Journal of Personality and Social Psychology",
+        "Scullin et al. (2018), Journal of Experimental Psychology: General",
+        "Lieberman et al. (2007), Psychological Science",
+        "Esterling et al. (1994), Journal of Consulting and Clinical Psychology",
       ],
     },
   },
   { kind: "divider" },
   {
     kind: "line",
-    text: ["Bloom keeps what Sam felt apart from what Sam still has to do."],
+    text: ["Two minutes of rambling becomes one note.", "The dots inside are the loose ends Bloom heard."],
   },
   {
     kind: "phone",
-    caption:
-      "GIF — Note. “2 loose ends parked. Nothing urgent before 9am tomorrow.” The AI Synthesis tab, then the messy transcript.",
+    caption: "GIF — Home. The new orb settles beside the week's notes and two dots appear inside it. “2 loose ends parked. Nothing urgent before 9am tomorrow.”",
+  },
+  { kind: "divider" },
+  { kind: "line", text: ["Bloom keeps how Sam felt apart from what Sam still has to do."] },
+  {
+    kind: "phone",
+    caption: "GIF — Note. The synthesis reads “Running on other people's agendas”, with the two parked loose ends below. Then the messy transcript.",
     pill: {
       label: "Sorting the mess",
       title: "Sorting the mess",
       body: [
-        "Bloom reflects back how your day felt, in plain language, and quietly lifts out the loose ends so they stop looping in your head.",
-        "It only uses the calendar and work tools you connect. It reads, and never posts, replies or edits. Every note shows exactly what it looked at.",
+        "An end-of-day ramble mixes feelings, worries and tasks in one breath. Bloom separates them: a short reflection on how the day felt, one question to sit with, and the loose ends lifted out on their own.",
+        "It doesn't diagnose or advise. It reflects back what you said, and the full transcript is always one tab away.",
+      ],
+    },
+  },
+  { kind: "divider" },
+  {
+    kind: "line",
+    text: ["It knew “the onboarding thing” meant Daniel's Slack thread.", "And it says exactly what it read."],
+  },
+  {
+    kind: "phone",
+    caption: "GIF — Sources. The note scrolls to its last line: “Read: Google Calendar (today's calls), Slack #acme-review. Nothing else.”",
+    pill: {
+      label: "Context awareness",
+      title: "Context awareness",
+      body: [
+        "Bloom reads the calendar, Slack and Notion you connect, so a vague “the onboarding thing” becomes Daniel's request and its Monday deadline. The lamp adds when and where you spoke.",
+        "It only reads. It never posts, replies or edits. Each source has its own switch, and every note lists what Bloom looked at.",
       ],
     },
   },
   { kind: "big", text: ["Sam puts the phone down.", "The evening is theirs."] },
   { kind: "divider" },
-  { kind: "line", text: ["The next morning, Sam swipes over to their week."] },
+  {
+    kind: "line",
+    text: ["Next morning, Sam swipes over to the week.", "The two loose ends are waiting in the tray."],
+  },
   {
     kind: "phone",
-    caption:
-      "GIF — Calendar. Home slides away and the week slides in. Imported meetings sit faded and tagged. Sam drags “Rework onboarding flow” and “Reply to Leah” onto Friday, past a “Let go” zone. “Nothing parked. You're clear.”",
+    caption: "GIF — Calendar. Home eases back as the week slides over it. Faded meetings carry Google Calendar and Notion tags. The tray holds two loose ends.",
     pill: {
-      label: "Parked, not pushed",
-      title: "Parked, not pushed",
+      label: "Parking loose ends",
+      title: "Parking loose ends",
       body: [
-        "Last night, Bloom didn't ask Sam to plan anything. It held their loose ends somewhere they trust.",
-        "Imported events stay faded and untouchable, so Sam can always tell their own thoughts apart from everything else on the calendar. Anything that doesn't deserve the energy can be dragged to “Let go”.",
+        "Bloom never asks you to plan at night. Loose ends are parked: held somewhere you trust until you're ready for them.",
+        "They wear Google Calendar's own colours, Lavender for deep work and Flamingo for replies, so a task looks the same in Bloom as in the calendar it syncs to. Imported events stay faded and fixed, so your own thoughts never blur into everyone else's plans.",
       ],
     },
   },
   { kind: "divider" },
-  { kind: "line", text: ["Bloom suggests where things could fit. Sam decides."] },
+  {
+    kind: "line",
+    text: ["Sam drags both onto Friday.", "Anything not worth the energy goes to “Let go”."],
+  },
   {
     kind: "phone",
-    caption:
-      "GIF — Day view. Two dashed suggestions with reasons. Sam taps ✓ on each and they fill with soft colour. Back in the week, Friday's blocks are sized by duration.",
+    caption: "GIF — Drag. A loose end lifts from the tray and follows Sam's finger. Friday lights up and a “Let go” bin waits below. “Nothing parked. You're clear.”",
+  },
+  { kind: "divider" },
+  { kind: "line", text: ["Bloom suggests when. Sam decides."] },
+  {
+    kind: "phone",
+    caption: "GIF — Day view. Two dashed suggestions, each with a reason. Sam taps ✓ on both. Back in the week, each block is as tall as it is long.",
     pill: {
-      label: "You decide",
-      title: "You decide",
+      label: "Full autonomy",
+      title: "Full autonomy",
       body: [
-        "Bloom never books anything on its own. Every suggestion comes with a reason, and none happens without your approval.",
-        "Accept it, dismiss it, or leave the loose end unscheduled. Bloom does the noticing. You make the decisions.",
+        "A suggestion stays a dashed outline with its reason, “Longest free stretch before Monday”, until you accept it. Dismiss it, move it, or leave the loose end unscheduled.",
+        "Nothing reaches your calendar without your approval, and quiet hours keep Bloom silent after work.",
       ],
     },
   },
@@ -128,11 +144,11 @@ export const closing = {
   big: ["Bloom holds the day,", "so you can close it."],
   film: "Film — dusk in a small studio. A laptop closes, a hand touches Bloom, its petals glow, Sam talks, the light dims, and Sam walks away from the desk.",
   statement: "Bloom is a concept by [team names] for DECO3200, 2026.",
-  cta: { label: "Try the prototype", href: "/prototype" },
+  cta: { label: "Try the demo", href: "/demo" },
   footer: {
     links: [
-      { label: "Home", href: "/" },
-      { label: "Prototype", href: "/prototype" },
+      { label: "Story", href: "/" },
+      { label: "Demo", href: "/demo" },
     ],
     note: "© 2026 Bloom · DECO3200",
   },

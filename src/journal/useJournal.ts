@@ -1,12 +1,14 @@
 // journal state lives here.
 // screens read `state` and call `actions`.
-// dragging and swiping stay in this file because they follow the pointer.
+// swipes, edge-swipes, pull-to-dismiss and dragging stay in this file because they follow the pointer.
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { story, type DayId } from "../data/story";
 import {
+  baseOf,
   freshItems,
   isDayId,
+  isOverlay,
   phoneWidth,
   trackXFor,
   type ItemState,
@@ -23,29 +25,44 @@ export interface DragVisual {
   overBin: boolean;
 }
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
 export interface JournalState {
   screen: Screen;
   items: Items;
+  recorded: boolean;
+  arrived: boolean;
+  recPhase: "idle" | "listening" | "sorting";
+  recSeconds: number;
+  settings: Record<string, boolean>;
   playing: boolean;
   tab: string;
   menuId: string | null;
   toast: boolean;
-  pulse: number;
   drag: DragVisual | null;
   trackX: number;
   trackLive: boolean;
+  // where the open overlay grew from, in phone px
+  origin: Point;
+  // live offset while an overlay is being swiped away
+  pull: Point | null;
   ready: boolean;
 }
 
 export interface JournalActions {
   restart: () => void;
-  openNote: () => void;
+  openNote: (from?: Element | null) => void;
   openWeek: () => void;
   openHome: () => void;
-  openDay: () => void;
-  backFromNote: () => void;
-  backFromDay: () => void;
-  pulseMic: () => void;
+  openDay: (from?: Element | null) => void;
+  openSettings: (from?: Element | null) => void;
+  openRecording: (from?: Element | null) => void;
+  stopRecording: () => void;
+  close: () => void;
+  toggleSetting: (id: string) => void;
   togglePlay: () => void;
   selectTab: (id: string) => void;
   accept: (id: string) => void;
@@ -60,8 +77,16 @@ interface Gesture {
   pointer: number;
   x: number;
   y: number;
+  t: number;
+  // recent samples for flick velocity
+  lastX: number;
+  lastY: number;
+  lastT: number;
+  vx: number;
+  vy: number;
   origin: number;
-  mode: "undecided" | "swipe" | "ignore";
+  kind: "track" | "edge" | "pull";
+  mode: "undecided" | "live" | "ignore";
 }
 
 interface DragGesture {
@@ -72,17 +97,31 @@ interface DragGesture {
   active: boolean;
 }
 
+function freshSettings(): Record<string, boolean> {
+  const entries: [string, boolean][] = [
+    ...story.settings.lamp.toggles.map((t) => [t.id, t.on] as [string, boolean]),
+    ...story.settings.sources.map((s) => [s.id, s.on] as [string, boolean]),
+  ];
+  return Object.fromEntries(entries);
+}
+
 const initialState: JournalState = {
   screen: "home",
   items: freshItems(),
+  recorded: false,
+  arrived: false,
+  recPhase: "idle",
+  recSeconds: 0,
+  settings: freshSettings(),
   playing: false,
   tab: "synthesis",
   menuId: null,
   toast: false,
-  pulse: 0,
   drag: null,
   trackX: 0,
   trackLive: false,
+  origin: { x: 201, y: 437 },
+  pull: null,
   ready: false,
 };
 
@@ -95,6 +134,15 @@ function focusSoon(id: string) {
 function scaleOf(phone: HTMLElement): number {
   const width = phone.getBoundingClientRect().width;
   return width > 0 ? width / phoneWidth : 1;
+}
+
+// centre of an element, in phone px
+function originOf(phone: HTMLElement | null, el: Element | null | undefined): Point | null {
+  if (!phone || !el) return null;
+  const p = phone.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  const s = scaleOf(phone);
+  return { x: (r.left + r.width / 2 - p.left) / s, y: (r.top + r.height / 2 - p.top) / s };
 }
 
 // which day column is under the pointer, ignoring the parked tray
@@ -119,7 +167,7 @@ function pointerOverBin(x: number, y: number): boolean {
   const pill = document.querySelector<HTMLElement>(".letgo-pill");
   if (!pill) return false;
   const rect = pill.getBoundingClientRect();
-  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  return x >= rect.left - 12 && x <= rect.right + 12 && y >= rect.top - 12 && y <= rect.bottom + 12;
 }
 
 function resetScroll(phone: HTMLElement) {
@@ -134,11 +182,20 @@ function resetScroll(phone: HTMLElement) {
     }
     scroller.scrollLeft = left;
   }
-  const note = phone.querySelector<HTMLElement>("#note-scroll");
-  const day = phone.querySelector<HTMLElement>("#day-scroll");
-  if (note) note.scrollTop = 0;
-  if (day) day.scrollTop = 0;
+  for (const id of ["note-scroll", "day-scroll", "settings-scroll"]) {
+    const el = phone.querySelector<HTMLElement>(`#${id}`);
+    if (el) el.scrollTop = 0;
+  }
 }
+
+const titleFor: Record<Screen, string> = {
+  home: "home-title",
+  week: "week-title",
+  note: "note-title",
+  day: "day-title",
+  settings: "settings-title",
+  recording: "rec-title",
+};
 
 export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
   const [state, setState] = useState<JournalState>(initialState);
@@ -147,11 +204,14 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
 
   const undoRef = useRef<string[]>([]);
   const toastTimer = useRef(0);
+  const arriveTimer = useRef(0);
+  const sortTimer = useRef(0);
   const returnFocus = useRef<HTMLElement | null>(null);
   const gesture = useRef<Gesture | null>(null);
   const dragRef = useRef<DragGesture | null>(null);
   const suppressClick = useRef(false);
   const updateRef = useRef<(patch: Partial<JournalState>) => void>(() => {});
+  const closeRef = useRef<() => void>(() => {});
 
   function update(patch: Partial<JournalState>) {
     const next = { ...stateRef.current, ...patch };
@@ -165,10 +225,7 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
     toastTimer.current = window.setTimeout(() => {
       undoRef.current = [];
       const toast = document.getElementById("toast");
-      if (toast?.contains(document.activeElement)) {
-        const screen = stateRef.current.screen;
-        focusSoon(screen === "day" ? "day-title" : "week-title");
-      }
+      if (toast?.contains(document.activeElement)) focusSoon(titleFor[stateRef.current.screen]);
       updateRef.current({ toast: false });
     }, 5000);
   }
@@ -176,85 +233,98 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
   function hideToast(focusFallback: boolean) {
     window.clearTimeout(toastTimer.current);
     const toast = document.getElementById("toast");
-    if (focusFallback && toast?.contains(document.activeElement)) {
-      const screen = stateRef.current.screen;
-      focusSoon(screen === "day" ? "day-title" : "week-title");
-    }
+    if (focusFallback && toast?.contains(document.activeElement)) focusSoon(titleFor[stateRef.current.screen]);
     update({ toast: false });
   }
 
-  function go(screen: Screen, focusId?: string) {
-    update({ screen, menuId: null, trackX: trackXFor(screen), trackLive: false });
-    if (focusId) focusSoon(focusId);
+  function go(screen: Screen, extra: Partial<JournalState> = {}) {
+    update({ screen, menuId: null, trackX: trackXFor(screen), trackLive: false, pull: null, ...extra });
+    focusSoon(titleFor[screen]);
+  }
+
+  function openOverlay(screen: Screen, from?: Element | null, extra: Partial<JournalState> = {}) {
+    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const origin = originOf(phoneRef.current, from) ?? stateRef.current.origin;
+    go(screen, { origin, ...extra });
   }
 
   function setItem(id: string, next: ItemState, extra: Partial<JournalState> = {}) {
-    update({
-      ...extra,
-      items: { ...stateRef.current.items, [id]: next },
-    });
+    update({ ...extra, items: { ...stateRef.current.items, [id]: next } });
+  }
+
+  function finishRecording() {
+    window.clearTimeout(sortTimer.current);
+    update({ recPhase: "sorting" });
+    sortTimer.current = window.setTimeout(() => {
+      go("home", { recPhase: "idle", recorded: true, arrived: true });
+      window.clearTimeout(arriveTimer.current);
+      arriveTimer.current = window.setTimeout(() => updateRef.current({ arrived: false }), 5200);
+    }, 1800);
   }
 
   const actions: JournalActions = {
     restart() {
       undoRef.current = [];
       window.clearTimeout(toastTimer.current);
+      window.clearTimeout(arriveTimer.current);
+      window.clearTimeout(sortTimer.current);
       dragRef.current = null;
       gesture.current = null;
-      update({
-        screen: "home",
-        items: freshItems(),
-        playing: false,
-        tab: "synthesis",
-        menuId: null,
-        toast: false,
-        drag: null,
-        trackX: 0,
-        trackLive: false,
-      });
+      update({ ...initialState, ready: true });
       const phone = phoneRef.current;
       if (phone) resetScroll(phone);
       focusSoon("home-title");
     },
-    openNote() {
-      returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      go("note", "note-title");
+    openNote(from) {
+      openOverlay("note", from);
     },
     openWeek() {
-      go("week", "week-title");
+      go("week");
     },
     openHome() {
-      go("home", "home-title");
-    },
-    openDay() {
-      returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      go("day", "day-title");
-    },
-    backFromNote() {
       go("home");
-      const back = returnFocus.current ?? document.querySelector<HTMLElement>('[data-blob="meetings"]');
-      requestAnimationFrame(() => back?.focus());
     },
-    backFromDay() {
-      go("week");
-      const back = returnFocus.current ?? document.querySelector<HTMLElement>("[data-open-day]");
-      requestAnimationFrame(() => back?.focus({ preventScroll: true }));
+    openDay(from) {
+      openOverlay("day", from);
     },
-    pulseMic() {
-      update({ pulse: stateRef.current.pulse + 1 });
+    openSettings(from) {
+      openOverlay("settings", from);
+    },
+    openRecording(from) {
+      openOverlay("recording", from, { recPhase: "listening", recSeconds: 0 });
+    },
+    stopRecording() {
+      if (stateRef.current.recPhase !== "listening") return;
+      finishRecording();
+    },
+    close() {
+      const screen = stateRef.current.screen;
+      if (!isOverlay(screen)) return;
+      if (screen === "recording") {
+        window.clearTimeout(sortTimer.current);
+        go("home", { recPhase: "idle", recSeconds: 0 });
+        return;
+      }
+      go(baseOf(screen));
+      const back = returnFocus.current;
+      if (back) requestAnimationFrame(() => back.focus({ preventScroll: true }));
+    },
+    toggleSetting(id) {
+      const settings = stateRef.current.settings;
+      update({ settings: { ...settings, [id]: !settings[id] } });
     },
     togglePlay() {
       update({ playing: !stateRef.current.playing });
     },
-    selectTab(id: string) {
+    selectTab(id) {
       update({ tab: id });
     },
-    accept(id: string) {
+    accept(id) {
       const item = stateRef.current.items[id];
       if (!item || item.place !== "fri") return;
       setItem(id, { ...item, suggestion: "accepted" });
     },
-    dismiss(id: string) {
+    dismiss(id) {
       const item = stateRef.current.items[id];
       if (!item || item.place !== "fri") return;
       setItem(id, { ...item, suggestion: "dismissed" });
@@ -266,9 +336,7 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
       const items = { ...stateRef.current.items };
       for (const meta of story.looseEnds) {
         const item = items[meta.id];
-        if (item?.place === "fri" && item.suggestion === "pending") {
-          items[meta.id] = { ...item, suggestion: "accepted" };
-        }
+        if (item?.place === "fri" && item.suggestion === "pending") items[meta.id] = { ...item, suggestion: "accepted" };
       }
       update({ items });
     },
@@ -285,7 +353,7 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
         armToast();
       }
     },
-    toggleMenu(id: string) {
+    toggleMenu(id) {
       if (stateRef.current.menuId === id) {
         update({ menuId: null });
         document.getElementById(`move-${id}`)?.focus();
@@ -293,57 +361,103 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
       }
       update({ menuId: id });
     },
-    chooseMove(id: string, dest: string) {
+    chooseMove(id, dest) {
       update({ menuId: null });
+      const item = stateRef.current.items[id];
+      if (!item) return;
       if (dest === "letgo") {
-        const item = stateRef.current.items[id];
-        if (!item) return;
         undoRef.current.push(id);
         setItem(id, { place: "gone", suggestion: "pending" }, { toast: true, menuId: null });
         armToast();
         return;
       }
       if (!isDayId(dest)) return;
-      const item = stateRef.current.items[id];
-      if (!item) return;
       setItem(id, { place: dest as DayId, suggestion: "pending" }, { menuId: null });
     },
   };
+  closeRef.current = actions.close;
+
+  // the recording clock
+  useEffect(() => {
+    if (state.recPhase !== "listening") return;
+    const timer = window.setInterval(() => {
+      updateRef.current({ recSeconds: stateRef.current.recSeconds + 1 });
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [state.recPhase]);
 
   useEffect(() => {
     const node = phoneRef.current;
     if (!node) return;
-    // `node` is an alias of the ref, so nested handlers still see it as nullable.
     const phone: HTMLDivElement = node;
-
     const write = (patch: Partial<JournalState>) => updateRef.current(patch);
 
-    function beginSwipe(event: PointerEvent) {
-      const screen = stateRef.current.screen;
-      if (screen !== "home" && screen !== "week") return;
-      if (dragRef.current) return;
-      const target = event.target instanceof Element ? event.target : null;
-      if (!target) return;
-      if (screen === "week" && !target.closest(".week-head, [data-open-home]")) return;
-      if (target.closest(".tray, [role='menu']")) return;
+    function local(event: PointerEvent): Point {
+      const r = phone.getBoundingClientRect();
+      const s = scaleOf(phone);
+      return { x: (event.clientX - r.left) / s, y: (event.clientY - r.top) / s };
+    }
+
+    function startGesture(event: PointerEvent, kind: Gesture["kind"]) {
+      const now = performance.now();
       gesture.current = {
         pointer: event.pointerId,
         x: event.clientX,
         y: event.clientY,
-        origin: trackXFor(screen),
+        t: now,
+        lastX: event.clientX,
+        lastY: event.clientY,
+        lastT: now,
+        vx: 0,
+        vy: 0,
+        origin: trackXFor(stateRef.current.screen),
+        kind,
         mode: "undecided",
       };
     }
 
-    function moveSwipe(event: PointerEvent) {
-      const current = gesture.current;
-      if (!current || event.pointerId !== current.pointer) return;
-      const dx = (event.clientX - current.x) / scaleOf(phone);
-      const dy = (event.clientY - current.y) / scaleOf(phone);
-      if (current.mode === "undecided") {
+    function beginGesture(event: PointerEvent) {
+      if (dragRef.current || event.button > 0) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      const screen = stateRef.current.screen;
+      const at = local(event);
+
+      if (isOverlay(screen)) {
+        if (screen === "recording" && stateRef.current.recPhase !== "listening") return;
+        if (!target.closest(".overlay.is-open")) return;
+        // left edge swipes back, like iOS. pulling down from the header dismisses.
+        if (at.x < 32) startGesture(event, "edge");
+        else if (screen === "recording" || target.closest(".screen-head, .grabber")) startGesture(event, "pull");
+        return;
+      }
+
+      if (target.closest(".tray, [role='menu'], .mic, .settings")) return;
+      if (screen === "week" && at.x > 32 && !target.closest(".week-head, [data-open-home]")) return;
+      startGesture(event, "track");
+    }
+
+    function moveGesture(event: PointerEvent) {
+      const g = gesture.current;
+      if (!g || event.pointerId !== g.pointer) return;
+      const s = scaleOf(phone);
+      const now = performance.now();
+      const dt = Math.max(1, now - g.lastT);
+      g.vx = ((event.clientX - g.lastX) / s / dt) * 0.6 + g.vx * 0.4;
+      g.vy = ((event.clientY - g.lastY) / s / dt) * 0.6 + g.vy * 0.4;
+      g.lastX = event.clientX;
+      g.lastY = event.clientY;
+      g.lastT = now;
+      const dx = (event.clientX - g.x) / s;
+      const dy = (event.clientY - g.y) / s;
+
+      if (g.mode === "undecided") {
         if (Math.hypot(dx, dy) < 8) return;
-        current.mode = Math.abs(dx) > Math.abs(dy) ? "swipe" : "ignore";
-        if (current.mode === "swipe") {
+        const horizontal = Math.abs(dx) > Math.abs(dy);
+        if (g.kind === "track") g.mode = horizontal ? "live" : "ignore";
+        else if (g.kind === "edge") g.mode = horizontal && dx > 0 ? "live" : "ignore";
+        else g.mode = !horizontal && dy > 0 ? "live" : "ignore";
+        if (g.mode === "live") {
           try {
             phone.setPointerCapture(event.pointerId);
           } catch {
@@ -351,29 +465,48 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
           }
         }
       }
-      if (current.mode !== "swipe") return;
-      const x = Math.min(0, Math.max(-phoneWidth, current.origin + dx));
-      write({ trackX: x, trackLive: true });
+      if (g.mode !== "live") return;
+
+      if (g.kind === "track") {
+        let x = g.origin + dx;
+        // rubber band past either end
+        if (x > 0) x = x * 0.25;
+        if (x < -phoneWidth) x = -phoneWidth + (x + phoneWidth) * 0.25;
+        write({ trackX: x, trackLive: true });
+      } else if (g.kind === "edge") {
+        write({ pull: { x: Math.max(0, dx), y: 0 } });
+      } else {
+        write({ pull: { x: 0, y: Math.max(0, dy) } });
+      }
     }
 
-    function endSwipe(event: PointerEvent) {
-      const current = gesture.current;
-      if (!current || event.pointerId !== current.pointer) return;
+    function endGesture(event: PointerEvent, cancelled = false) {
+      const g = gesture.current;
+      if (!g || event.pointerId !== g.pointer) return;
       gesture.current = null;
-      if (current.mode !== "swipe") return;
+      if (g.mode !== "live") return;
       suppressClick.current = true;
-      const dx = (event.clientX - current.x) / scaleOf(phone);
-      const x = Math.min(0, Math.max(-phoneWidth, current.origin + dx));
-      const traveled = Math.abs(x - current.origin) / phoneWidth;
-      let screen: Screen;
-      if (traveled > 0.3) screen = x < current.origin - 1 ? "week" : "home";
-      else screen = current.origin < -phoneWidth / 2 ? "week" : "home";
-      // keep the finger position for one frame, then glide to the snap point
-      write({ trackX: x, trackLive: true });
-      requestAnimationFrame(() => {
-        write({ screen, trackX: trackXFor(screen), trackLive: false, menuId: null });
-        focusSoon(screen === "week" ? "week-title" : "home-title");
-      });
+      const dx = (event.clientX - g.x) / scaleOf(phone);
+      const dy = (event.clientY - g.y) / scaleOf(phone);
+
+      if (g.kind === "track") {
+        const x = Math.min(0, Math.max(-phoneWidth, g.origin + dx));
+        let screen: "home" | "week" = g.origin < 0 ? "week" : "home";
+        if (!cancelled) {
+          if (g.vx < -0.45) screen = "week";
+          else if (g.vx > 0.45) screen = "home";
+          else if (Math.abs(x - g.origin) / phoneWidth > 0.35) screen = x < g.origin ? "week" : "home";
+        }
+        requestAnimationFrame(() => {
+          write({ screen, trackX: trackXFor(screen), trackLive: false, menuId: null });
+          focusSoon(titleFor[screen]);
+        });
+        return;
+      }
+
+      const far = g.kind === "edge" ? dx > 120 || g.vx > 0.5 : dy > 140 || g.vy > 0.55;
+      if (far && !cancelled) closeRef.current();
+      else write({ pull: null });
     }
 
     function beginDrag(event: PointerEvent, row: HTMLElement) {
@@ -394,26 +527,14 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
     function moveDrag(event: PointerEvent) {
       const current = dragRef.current;
       if (!current || event.pointerId !== current.pointer) return;
-      const dx = event.clientX - current.x;
-      const dy = event.clientY - current.y;
       if (!current.active) {
-        if (Math.hypot(dx, dy) < 6) return;
+        if (Math.hypot(event.clientX - current.x, event.clientY - current.y) < 6) return;
         current.active = true;
       }
-      const rect = phone.getBoundingClientRect();
-      const scale = scaleOf(phone);
+      const at = local(event);
       const overBin = pointerOverBin(event.clientX, event.clientY);
       const column = overBin ? null : columnAt(event.clientX, event.clientY);
-      write({
-        drag: {
-          id: current.id,
-          active: true,
-          x: (event.clientX - rect.left) / scale,
-          y: (event.clientY - rect.top) / scale,
-          hotDay: column?.dataset.day ?? null,
-          overBin,
-        },
-      });
+      write({ drag: { id: current.id, active: true, x: at.x, y: at.y, hotDay: column?.dataset.day ?? null, overBin } });
     }
 
     function endDrag(commit: boolean, x = 0, y = 0) {
@@ -425,49 +546,46 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
         return;
       }
       suppressClick.current = true;
-      const metaId = current.id;
+      const id = current.id;
       const dropping = pointerOverBin(x, y);
       const day = dropping ? null : columnAt(x, y)?.dataset.day;
-      write({ drag: null });
+      const item = stateRef.current.items[id];
+      if (!item) {
+        write({ drag: null });
+        return;
+      }
       if (dropping) {
-        const item = stateRef.current.items[metaId];
-        if (!item) return;
-        undoRef.current.push(metaId);
-        write({
-          items: { ...stateRef.current.items, [metaId]: { place: "gone", suggestion: "pending" } },
-          toast: true,
-          drag: null,
-        });
+        undoRef.current.push(id);
+        write({ items: { ...stateRef.current.items, [id]: { place: "gone", suggestion: "pending" } }, toast: true, drag: null });
         armToast();
         return;
       }
       if (day && isDayId(day)) {
-        const item = stateRef.current.items[metaId];
-        if (!item) return;
-        write({
-          items: { ...stateRef.current.items, [metaId]: { place: day, suggestion: "pending" } },
-          drag: null,
-        });
+        write({ items: { ...stateRef.current.items, [id]: { place: day, suggestion: "pending" } }, drag: null });
+        return;
       }
+      write({ drag: null });
     }
 
     const onDown = (event: PointerEvent) => {
+      // a fresh press should never inherit the last gesture's click guard
+      suppressClick.current = false;
       const target = event.target instanceof Element ? event.target : null;
       const row = target?.closest<HTMLElement>("[data-chip]");
       if (row && stateRef.current.screen === "week") beginDrag(event, row);
-      else beginSwipe(event);
+      else beginGesture(event);
     };
     const onMove = (event: PointerEvent) => {
       moveDrag(event);
-      moveSwipe(event);
+      moveGesture(event);
     };
     const onUp = (event: PointerEvent) => {
       if (dragRef.current?.pointer === event.pointerId) endDrag(true, event.clientX, event.clientY);
-      endSwipe(event);
+      endGesture(event);
     };
     const onCancel = (event: PointerEvent) => {
       if (dragRef.current?.pointer === event.pointerId) endDrag(false);
-      endSwipe(event);
+      endGesture(event, true);
     };
     const onClick = (event: MouseEvent) => {
       if (!suppressClick.current) return;
@@ -486,12 +604,17 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
     };
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (dragRef.current) endDrag(false);
+        if (dragRef.current) {
+          endDrag(false);
+          return;
+        }
         const menuId = stateRef.current.menuId;
         if (menuId) {
           write({ menuId: null });
           document.getElementById(`move-${menuId}`)?.focus();
+          return;
         }
+        if (isOverlay(stateRef.current.screen)) closeRef.current();
         return;
       }
       const target = event.target instanceof HTMLElement ? event.target : null;
@@ -530,12 +653,14 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
       }
     };
 
+    // mouse users can drag the week sideways; touch scrolls natively
     const scroller = phone.querySelector<HTMLElement>("#day-scroller");
     let scrollDrag: { pointer: number; x: number; left: number; moved: boolean } | null = null;
     const onScrollDown = (event: PointerEvent) => {
       if (!scroller || event.pointerType === "touch") return;
       const target = event.target instanceof Element ? event.target : null;
       if (target?.closest("button")) return;
+      if (local(event).x < 32) return;
       scrollDrag = { pointer: event.pointerId, x: event.clientX, left: scroller.scrollLeft, moved: false };
       scroller.setPointerCapture(event.pointerId);
     };
@@ -555,7 +680,7 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
     phone.addEventListener("pointermove", onMove);
     phone.addEventListener("pointerup", onUp);
     phone.addEventListener("pointercancel", onCancel);
-    phone.addEventListener("click", onClick);
+    phone.addEventListener("click", onClick, true);
     phone.addEventListener("contextmenu", onMenu);
     document.addEventListener("pointerdown", onDocDown);
     document.addEventListener("keydown", onKey);
@@ -572,7 +697,7 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
       phone.removeEventListener("pointermove", onMove);
       phone.removeEventListener("pointerup", onUp);
       phone.removeEventListener("pointercancel", onCancel);
-      phone.removeEventListener("click", onClick);
+      phone.removeEventListener("click", onClick, true);
       phone.removeEventListener("contextmenu", onMenu);
       document.removeEventListener("pointerdown", onDocDown);
       document.removeEventListener("keydown", onKey);
@@ -581,6 +706,8 @@ export function useJournal(phoneRef: RefObject<HTMLDivElement | null>) {
       scroller?.removeEventListener("pointerup", onScrollEnd);
       scroller?.removeEventListener("pointercancel", onScrollEnd);
       window.clearTimeout(toastTimer.current);
+      window.clearTimeout(arriveTimer.current);
+      window.clearTimeout(sortTimer.current);
     };
   }, [phoneRef]);
 

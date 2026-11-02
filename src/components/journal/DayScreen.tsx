@@ -1,22 +1,26 @@
 // friday. suggested blocks can be accepted or dismissed.
 import { acceptLabel, dismissLabel, story } from "../../data/story";
 import { dayBlockHeight, type Items } from "../../journal/model";
-import type { JournalActions } from "../../journal/useJournal";
+import type { JournalActions, JournalState } from "../../journal/useJournal";
 import CalendarItem from "./CalendarItem";
+import Sheet from "./Sheet";
 
 interface Props {
-  open: boolean;
-  items: Items;
+  state: JournalState;
   actions: JournalActions;
 }
 
-export default function DayScreen({ open, items, actions }: Props) {
+export default function DayScreen({ state, actions }: Props) {
+  const items: Items = state.items;
   const [standup, crit] = story.week.imported;
+  const onFriday = story.looseEnds.filter((meta) => items[meta.id]?.place === "fri" && items[meta.id]?.suggestion !== "dismissed");
+  const pending = onFriday.filter((meta) => items[meta.id]?.suggestion === "pending").length;
+  const planned = onFriday.length > 0 && pending === 0;
 
   return (
-    <section className={open ? "overlay is-open" : "overlay"} id="screen-day" aria-labelledby="day-title" aria-hidden={!open} inert={!open}>
+    <Sheet id="screen-day" labelledBy="day-title" open={state.screen === "day"} origin={state.origin} pull={state.pull}>
       <header className="screen-head screen-head--day">
-        <button type="button" className="back-btn" id="day-back" aria-label={story.ui.backWeek} onClick={actions.backFromDay}>
+        <button type="button" className="back-btn" id="day-back" aria-label={story.ui.backWeek} onClick={actions.close}>
           <img src="/assets/back.svg" width={21} height={21} alt="" />
         </button>
         <h1 id="day-title" tabIndex={-1}>
@@ -33,7 +37,7 @@ export default function DayScreen({ open, items, actions }: Props) {
               variant="imported"
               itemId={standup.id}
               title={standup.dayTitle}
-              tint={standup.tint}
+              color={standup.color}
               source={standup.source}
               sourceName={standup.sourceName}
               accessibleName={`${standup.title}, ${standup.time}, ${standup.sourceName}`}
@@ -74,7 +78,7 @@ export default function DayScreen({ open, items, actions }: Props) {
               variant="imported"
               itemId={crit.id}
               title={crit.dayTitle}
-              tint={crit.tint}
+              color={crit.color}
               source={crit.source}
               sourceName={crit.sourceName}
               accessibleName={`${crit.title}, ${crit.time}, ${crit.sourceName}`}
@@ -82,7 +86,17 @@ export default function DayScreen({ open, items, actions }: Props) {
             />
           </div>
         </div>
+        <div className="day-foot">
+          {pending > 1 && (
+            <button type="button" className="quiet-btn" onClick={actions.acceptAll}>
+              {story.day.acceptBoth}
+            </button>
+          )}
+          <p className="calm-line" role="status" aria-live="polite">
+            {planned ? story.day.planned : ""}
+          </p>
+        </div>
       </div>
-    </section>
+    </Sheet>
   );
 }

@@ -7,14 +7,15 @@ import LooseEndChip from "./LooseEndChip";
 
 interface Props {
   items: Items;
+  recorded: boolean;
   active: boolean;
   menuId: string | null;
   drag: DragVisual | null;
   actions: JournalActions;
 }
 
-export default function WeekScreen({ items, active, menuId, drag, actions }: Props) {
-  const parked = parkedCount(items);
+export default function WeekScreen({ items, recorded, active, menuId, drag, actions }: Props) {
+  const parked = parkedCount(items, recorded);
   const clear = parked === 0;
 
   return (
@@ -28,7 +29,7 @@ export default function WeekScreen({ items, active, menuId, drag, actions }: Pro
         <div className="day-scroller" id="day-scroller">
           {story.week.days.map((day) => {
             const placed = story.looseEnds
-              .filter((meta) => items[meta.id]?.place === day.id)
+              .filter((meta) => recorded && items[meta.id]?.place === day.id)
               .map((meta) => ({ meta, item: items[meta.id], order: weekOrder(items[meta.id], meta) }));
             const imported = day.id === "fri" ? story.week.imported : [];
             const cards = [
@@ -39,7 +40,7 @@ export default function WeekScreen({ items, active, menuId, drag, actions }: Pro
             return (
               <div key={day.id} className={drag?.hotDay === day.id ? "day-col is-hot" : "day-col"} data-day={day.id}>
                 {day.id === "fri" ? (
-                  <button type="button" className="day-head is-open" data-open-day={day.id} aria-label={story.week.openFriday} onClick={actions.openDay}>
+                  <button type="button" className="day-head is-open" data-open-day={day.id} aria-label={story.week.openFriday} onClick={(event) => actions.openDay(event.currentTarget.parentElement)}>
                     <span className="dow">{day.name}</span>
                     <span className="dom">{day.date}</span>
                   </button>
@@ -58,7 +59,7 @@ export default function WeekScreen({ items, active, menuId, drag, actions }: Pro
                         variant="imported"
                         itemId={card.event.id}
                         title={card.event.title}
-                        tint={card.event.tint}
+                        color={card.event.color}
                         source={card.event.source}
                         sourceName={card.event.sourceName}
                         accessibleName={`${card.event.title}, ${card.event.time}, ${card.event.sourceName}`}
@@ -68,7 +69,8 @@ export default function WeekScreen({ items, active, menuId, drag, actions }: Pro
                         key={card.id}
                         variant="note"
                         week
-                        height={weekCardHeight(card.meta)}
+                        height={weekCardHeight(card.meta, card.item.suggestion === "accepted")}
+                        time={card.item.suggestion === "accepted" && card.meta.durationMin >= 60 ? card.meta.time : undefined}
                         itemId={card.meta.id}
                         title={card.meta.title}
                         color={card.meta.color}
@@ -83,11 +85,11 @@ export default function WeekScreen({ items, active, menuId, drag, actions }: Pro
         </div>
         <aside className={drag?.active ? "tray is-away" : clear ? "tray is-clear" : "tray"} id="tray">
           <p className="tray-count" id="tray-status" aria-live="polite">
-            {parkedLabel(parked)}
+            {parkedLabel(parked, recorded)}
           </p>
           <div className="tray-rows">
             {story.looseEnds
-              .filter((item) => items[item.id]?.place === "tray")
+              .filter((item) => recorded && items[item.id]?.place === "tray")
               .map((item) => (
                 <LooseEndChip
                   key={item.id}
@@ -110,7 +112,9 @@ export default function WeekScreen({ items, active, menuId, drag, actions }: Pro
         onClick={actions.openHome}
       >
         <span className="tab-visual" aria-hidden="true">
-          {">"}
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+            <path d="M1.5 1l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </span>
       </button>
     </section>
