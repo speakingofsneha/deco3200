@@ -1,9 +1,86 @@
 ---
-// journal demo.
-import Base from "../layouts/Base.astro";
-import JournalPage from "../components/journal/JournalPage";
+// the story site. sam's evening and morning with bloom, told one beat at a time.
+// the click-through prototype lives at /prototype.
+import Site from "../layouts/Site.astro";
+import StoryLine from "../components/site/StoryLine.astro";
+import BigLine from "../components/site/BigLine.astro";
+import PhonePlaceholder from "../components/site/PhonePlaceholder.astro";
+import MediaPlaceholder from "../components/site/MediaPlaceholder.astro";
+import Divider from "../components/site/Divider.astro";
+import Logo from "../components/site/Logo.astro";
+import Brand from "../components/site/Brand.astro";
+import FeaturePill from "../components/site/FeaturePill";
+import { site, story, closing } from "../data/site";
 ---
 
-<Base title="Journal">
-  <JournalPage client:only="react" />
-</Base>
+<Site title={site.title} description={site.description}>
+  <header class="mx-auto flex max-w-[64rem] justify-center gap-6 px-4 pt-5 font-sans text-footnote text-ink">
+    {site.nav.map((n) => (
+      <a class="inline-flex min-h-11 items-center hover:text-ink-muted" href={n.href}>{n.label}</a>
+    ))}
+  </header>
+
+  <main class="px-4">
+    <!-- intro -->
+    <section class="mx-auto flex min-h-[86vh] max-w-[21rem] flex-col items-center justify-center gap-8 text-center">
+      <div data-reveal><Logo size={34} /></div>
+      {site.intro.map((t) => (
+        <p data-reveal class="font-sans text-[1.1875rem] leading-[1.625rem] text-ink">{t}</p>
+      ))}
+      <a
+        data-reveal
+        href="#story"
+        aria-label="Start the story"
+        class="grid h-11 w-11 place-items-center rounded-full bg-surface hover:bg-[#e8e5dc]"
+      >
+        <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden="true">
+          <path d="M6 1v12M1 8l5 5 5-5" stroke="#111210" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+    </section>
+
+    <!-- story -->
+    <section id="story" class="flex scroll-mt-24 flex-col items-center gap-28 py-24 sm:gap-36">
+      {story.map((b) => {
+        if (b.kind === "line") return <StoryLine text={b.text} />;
+        if (b.kind === "big") return <BigLine text={b.text} />;
+        if (b.kind === "divider") return <Divider />;
+        if (b.kind === "photo") return <MediaPlaceholder caption={b.caption} src={b.src} />;
+        return (
+          <div class="flex flex-col items-center gap-10">
+            <PhonePlaceholder caption={b.caption} src={b.src} />
+            {b.pill && (
+              <div data-reveal>
+                <FeaturePill client:visible label={b.pill.label} title={b.pill.title} body={b.pill.body} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </section>
+
+    <!-- closing -->
+    <section id="about" class="flex scroll-mt-24 flex-col items-center gap-24 pb-28 pt-8">
+      <BigLine text={closing.big} />
+      <MediaPlaceholder variant="film" caption={closing.film} />
+      <div class="flex flex-col items-center gap-10">
+        <p data-reveal class="max-w-[24rem] text-center font-sans text-[1.75rem] leading-[2.25rem] text-ink">
+          <Brand text={closing.statement} />
+        </p>
+        <a data-reveal class="pill justify-center" href={closing.cta.href}>{closing.cta.label}</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-[64rem] px-4 pb-10 sm:px-8">
+    <div class="flex items-center justify-between border-t border-line-soft pt-5">
+      <Logo size={20} />
+      <nav class="flex gap-5 font-sans text-footnote text-ink" aria-label="Footer">
+        {closing.footer.links.map((l) => (
+          <a class="inline-flex min-h-11 items-center hover:text-ink-muted" href={l.href}>{l.label}</a>
+        ))}
+      </nav>
+    </div>
+    <p class="mt-6 font-sans text-caption text-ink-muted">{closing.footer.note}</p>
+  </footer>
+</Site>

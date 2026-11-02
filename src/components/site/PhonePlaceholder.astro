@@ -1,0 +1,32 @@
+---
+// a phone that will hold a screen recording. until `src` is set it
+// shows a labelled placeholder describing the gif that goes here.
+interface Props {
+  caption: string;
+  src?: string;
+}
+const { caption, src } = Astro.props;
+const isVideo = src?.endsWith(".mp4") || src?.endsWith(".webm");
+---
+
+<figure data-reveal class="phone mx-auto" aria-label={caption}>
+  {src && isVideo && <video class="phone-media" src={src} autoplay muted loop playsinline />}
+  {src && !isVideo && <img class="phone-media" src={src} alt={caption} />}
+  {!src && (
+    <>
+      <div class="phone-status" aria-hidden="true">
+        <span>6:42</span>
+        <span class="flex items-center gap-1">
+          <img src="/assets/signal.svg" alt="" />
+          <img src="/assets/wifi.svg" alt="" />
+          <img src="/assets/battery.svg" alt="" />
+        </span>
+      </div>
+      <figcaption class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-3 px-7 text-center">
+        <span class="rounded-full border border-dashed border-line px-3 py-1 font-sans text-caption text-ink-muted">placeholder</span>
+        <span class="font-sans text-footnote text-ink-muted">{caption}</span>
+      </figcaption>
+      <span class="phone-home" aria-hidden="true"></span>
+    </>
+  )}
+</figure>

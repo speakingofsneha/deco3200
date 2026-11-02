@@ -1,0 +1,12 @@
+---
+// a large serif statement between chapters.
+import Brand from "./Brand.astro";
+interface Props {
+  text: string[];
+}
+const { text } = Astro.props;
+---
+
+<h2 data-reveal class="mx-auto max-w-[36rem] text-center font-serif text-[2.25rem] leading-[2.625rem] tracking-[-0.01em] text-ink sm:text-[2.75rem] sm:leading-[3.25rem]">
+  {text.map((t, i) => <>{i > 0 && <br />}<Brand text={t} /></>)}
+</h2>

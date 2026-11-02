@@ -1,0 +1,48 @@
+---
+// shell for the story site. same fonts and tokens as the prototype,
+// plus site.css, which lets the page scroll on a plain canvas.
+import "../styles/global.css";
+import "../styles/site.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "Bloom", description = "" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="site">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Hedvig+Letters+Serif:opsz@12..24&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="site">
+    <slot />
+    <script>
+      // fade each [data-reveal] block up as it enters the viewport.
+      const items = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: "0px 0px -12% 0px", threshold: 0.08 },
+      );
+      items.forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

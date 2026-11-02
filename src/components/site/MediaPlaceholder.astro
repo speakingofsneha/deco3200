@@ -1,0 +1,32 @@
+---
+// a photo or film. "photo" sits slightly tilted like a print on a desk,
+// "film" is the wide dark frame near the end.
+interface Props {
+  caption: string;
+  src?: string;
+  variant?: "photo" | "film";
+}
+const { caption, src, variant = "photo" } = Astro.props;
+const film = variant === "film";
+const isVideo = src?.endsWith(".mp4") || src?.endsWith(".webm");
+---
+
+<figure
+  data-reveal
+  aria-label={caption}
+  class:list={[
+    "relative mx-auto overflow-hidden",
+    film
+      ? "aspect-[16/11] w-full max-w-[40rem] rounded-[20px] bg-[#2a2926]"
+      : "aspect-[4/3] w-[min(26rem,88vw)] -rotate-2 rounded-[6px] bg-surface shadow-[0_30px_60px_-36px_rgb(17_18_16/35%)]",
+  ]}
+>
+  {src && isVideo && <video class="absolute inset-0 h-full w-full object-cover" src={src} autoplay muted loop playsinline />}
+  {src && !isVideo && <img class="absolute inset-0 h-full w-full object-cover" src={src} alt={caption} />}
+  {!src && (
+    <figcaption class="absolute inset-0 flex flex-col items-center justify-center gap-3 px-10 text-center">
+      <span class:list={["rounded-full border border-dashed px-3 py-1 font-sans text-caption", film ? "border-white/30 text-white/75" : "border-line text-ink-muted"]}>placeholder</span>
+      <span class:list={["max-w-[24rem] font-sans text-footnote", film ? "text-white/75" : "text-ink-muted"]}>{caption}</span>
+    </figcaption>
+  )}
+</figure>
