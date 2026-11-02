@@ -15,6 +15,7 @@ interface Props {
 export default function PhoneStage({ phoneRef, restartLabel, onRestart, dragging, children }: Props) {
   return (
     <main className="stage">
+      <p className="rotate-note">Turn your phone upright to try the demo.</p>
       <a className="to-story" href={url("/")} aria-label="Back to the story">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />

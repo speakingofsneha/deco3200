@@ -2807,3 +2807,130 @@
   top: 694px;
   font-size: 15px;
 }
+
+/* ==================================================================
+   Bloom v5: phone layout measured in code (works in Safari too),
+   and Home laid out against the phone's real height (--H)
+   ================================================================== */
+.phone-scale {
+  transform-origin: top left;
+}
+
+.blob[data-blob="slow-start"] {
+  top: 196px;
+}
+
+.blob[data-blob="meetings"] {
+  top: calc(180px + (var(--H, 874px) - 330px) * 0.46);
+}
+
+.blob[data-blob="water"] {
+  top: calc(180px + (var(--H, 874px) - 330px) * 0.68);
+}
+
+.arrival {
+  top: calc(var(--H, 874px) - 180px);
+}
+
+.mic-wrap {
+  top: calc(var(--H, 874px) - 122px);
+}
+
+.edge-tab {
+  top: calc(var(--H, 874px) * 0.41);
+}
+
+@media (max-width: 540px) {
+  .stage {
+    display: block;
+    height: 100svh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .phone-slot.is-phone {
+    width: 100vw;
+    height: 100svh;
+    height: 100dvh;
+    aspect-ratio: auto;
+  }
+
+  html:has(.stage),
+  html:has(.stage) body {
+    overscroll-behavior: none;
+  }
+
+  /* no fake status bar on a real phone, so everything sits a little higher */
+  .is-phone .home-head {
+    top: 58px;
+  }
+
+  .is-phone .settings {
+    top: 58px;
+  }
+
+  .is-phone .blob[data-blob="slow-start"] {
+    top: 168px;
+  }
+
+  .is-phone .screen-head,
+  .is-phone .rec-head {
+    padding-top: 68px;
+  }
+
+  .is-phone .grabber {
+    top: 30px;
+  }
+
+  .is-phone .week-head {
+    padding-top: 56px;
+  }
+
+  .is-phone .rec-stage {
+    inset: 130px 0 160px;
+  }
+}
+
+/* phones on their side: ask to turn back */
+.rotate-note {
+  display: none;
+}
+
+@media (max-height: 500px) and (orientation: landscape) and (pointer: coarse) {
+  .rotate-note {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--color-canvas);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    text-align: center;
+    color: var(--color-ink);
+  }
+}
+
+/* the arrival line reads as a soft pill above the mic, so it never collides with a label */
+.arrival {
+  top: calc(var(--H, 874px) - 178px);
+  left: 50%;
+  right: auto;
+  width: max-content;
+  max-width: 340px;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: rgb(250 249 243 / 92%);
+  box-shadow: 0 6px 24px rgb(40 34 24 / 12%);
+  font-size: 15px;
+  transform: translate(-50%, 6px);
+}
+
+.arrival.is-on {
+  transform: translate(-50%, 0);
+}
+
+.arrival:empty {
+  display: none;
+}
