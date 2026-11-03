@@ -1,4 +1,4 @@
-// copy and sample data for the bloom demo.
+// copy and sample data for the Bloom demo.
 
 export type DayId = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 // orb colours come from the design system palette
@@ -84,7 +84,7 @@ export const calColors: Record<CalColor, { name: string; hex: string }> = {
 };
 
 export const story = {
-  title: "bloom",
+  title: "Bloom",
   statusTime: "6:42",
   restart: "Restart",
 
@@ -95,7 +95,7 @@ export const story = {
     openHome: "Back to Home",
     play: "Play voice note",
     pause: "Pause voice note",
-    mic: "Talk to bloom",
+    mic: "Talk to Bloom",
     move: "Move…",
     letGo: "Let go",
     undo: "Undo",
@@ -122,7 +122,7 @@ export const story = {
 
   recording: {
     title: "Recording",
-    listening: "bloom is listening",
+    listening: "Bloom is listening",
     stop: "Stop recording",
     cancel: "Discard recording",
     sorting: "Finding the feelings and loose ends…",
@@ -282,7 +282,7 @@ export const story = {
       privacy: "Privacy",
     },
     lamp: {
-      name: "bloom · Sam's desk",
+      name: "Bloom · Sam's desk",
       status: "Connected",
       toggles: [
         { id: "glow", label: "Glow when the workday ends", on: true },
@@ -294,10 +294,10 @@ export const story = {
       { id: "gcal", name: "Google Calendar", detail: "Reads events. Adds only what you approve.", on: true },
       { id: "slack", name: "Slack", detail: "Reads channels you choose. Never posts.", on: true },
       { id: "notion", name: "Notion", detail: "Reads pages you choose. Never edits.", on: true },
-      { id: "gmail", name: "Gmail", detail: "Off. bloom can't see your email.", on: false },
+      { id: "gmail", name: "Gmail", detail: "Off. Bloom can't see your email.", on: false },
     ],
     colours: {
-      note: "bloom uses Google Calendar's colours, so a loose end looks the same in both places.",
+      note: "Bloom uses Google Calendar's colours, so a loose end looks the same in both places.",
       rows: [
         { category: "Deep work", color: "lavender" as CalColor },
         { category: "Replies", color: "flamingo" as CalColor },
@@ -305,7 +305,7 @@ export const story = {
       ],
     },
     privacy: [
-      { id: "log", label: "What bloom read today" },
+      { id: "log", label: "What Bloom read today" },
       { id: "delete", label: "Delete all notes" },
     ],
     restart: "Restart demo",
