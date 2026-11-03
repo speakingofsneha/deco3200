@@ -13,7 +13,7 @@ import { site, story, closing } from "../data/site";
 ---
 
 <Site title={site.title} description={site.description}>
-  <header class="mx-auto flex max-w-[64rem] justify-center gap-6 px-4 pt-5 font-sans text-footnote text-ink">
+  <header class="mx-auto flex max-w-[68rem] justify-center gap-6 px-4 pt-5 font-sans text-subheadline text-ink">
     {site.nav.map((n) => (
       <a class="inline-flex min-h-11 items-center hover:text-ink-muted" href={n.href}>{n.label}</a>
     ))}
@@ -60,8 +60,6 @@ import { site, story, closing } from "../data/site";
 
     <!-- closing -->
     <section id="about" class="flex scroll-mt-24 flex-col items-center gap-24 pb-28 pt-8">
-      <BigLine text={closing.big} />
-      <MediaPlaceholder variant="film" caption={closing.film} />
       <div class="flex flex-col items-center gap-10">
         <p data-reveal class="max-w-[24rem] text-center font-sans text-[1.75rem] leading-[2.25rem] text-ink">
           {closing.statement}

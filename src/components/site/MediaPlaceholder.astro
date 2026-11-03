@@ -8,7 +8,7 @@ interface Props {
 }
 const { caption, src, variant = "photo" } = Astro.props;
 const film = variant === "film";
-const isVideo = src?.endsWith(".mp4") || src?.endsWith(".webm");
+const isVideo = !!src && /\.(mp4|webm|mov)$/i.test(src);
 ---
 
 <figure
