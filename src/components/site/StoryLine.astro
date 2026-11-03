@@ -9,7 +9,7 @@ const { text, label } = Astro.props;
 
 <div data-reveal class="mx-auto flex max-w-[20rem] flex-col items-center gap-6 text-center sm:max-w-[22rem]">
   {label && <p class="beat-label">{label}</p>}
-  <div class="flex flex-col gap-6 font-serif text-[1.25rem] leading-[1.7rem] text-ink sm:text-[1.3125rem] sm:leading-[1.75rem]">
+  <div class="flex flex-col gap-6 font-serif text-[1.3rem] leading-[1.7rem] text-ink sm:text-[1.4rem] sm:leading-[1.75rem]">
     {text.map((t) => <p>{t}</p>)}
   </div>
 </div>

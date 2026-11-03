@@ -111,6 +111,12 @@ body.site {
   color: var(--color-ink);
   transition: background-color 200ms var(--ease-calm);
 }
+/* text-only pills (the closing cta). feature pills keep the label and + apart.
+   this has to live here: site.css is unlayered, so it beats Tailwind's justify-center. */
+.pill.justify-center {
+  justify-content: center;
+  padding-inline: 20px;
+}
 .pill:hover {
   background: #e8e5dc;
 }
