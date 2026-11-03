@@ -16,16 +16,16 @@ export type Block =
   | { kind: "divider" };
 
 export const site = {
-  title: "bloom",
+  title: "Bloom",
   description:
-    "bloom helps people who work from home end the workday. Talk to a lamp on your desk when you're done, and your loose ends wait in your calendar until morning.",
+    "Bloom helps people who work from home end the workday. Talk to a lamp on your desk when you're done, and your loose ends wait in your calendar until morning.",
   nav: [
     { label: "About", href: "#story" },
     { label: "Demo", href: url("/demo") },
   ],
   intro: [
     "When you work from home, nothing tells you the workday is over; unfinished tasks follow you into the rest of your evening. Bloom is an intelligent journal you can talk to when your work is done.",
-    "Discover bloom through Sam's evening.",
+    "Discover Bloom through Sam's evening.",
   ],
 };
 
@@ -40,16 +40,16 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    text: ["It's 6:42pm. Sam closes the laptop, touches bloom, and talks. There's no prompts or structure, just a stream of consciousness."],
+    text: ["It's 6:42pm. Sam closes the laptop, touches Bloom, and talks. There's no prompts or structure, just a stream of consciousness."],
   },
   {
     kind: "photo",
-    caption: "Photo — bloom on Sam's desk at dusk, next to her closed laptop.",
+    caption: "Photo — Bloom on Sam's desk at dusk, next to her closed laptop.",
     src: url("/assets/story/lamprecording.MOV"),
   },
   {
     kind: "line",
-    text: ["She can use the app as well, but she prefers to talk to use the lamp instead."],
+    text: ["She can use the app as well, but she prefers to talk the lamp instead."],
   },
   {
     kind: "phone",
@@ -81,7 +81,7 @@ export const story: Block[] = [
       label: "Tagging emotions",
       title: "Tagging emotions",
       body: [
-        "Most AI journals reply to you. We didn't want Sam's evening to become another conversation, so bloom doesn't chat, prompt or give advice. It tags the feelings in what she said and lifts out the tasks from them.",
+        "Most AI journals reply to you. We didn't want Sam's evening to become another conversation, so Bloom doesn't chat, prompt or give advice. It tags the feelings in what she said and lifts out the tasks from them.",
         "Every note is tagged with the feelings in it, close to the words Sam used. Each feeling has a colour and a size, so a note's orb becomes a quick read of the day.",
       ],
     },
@@ -116,18 +116,18 @@ export const story: Block[] = [
   { kind: "divider" },
   {
     kind: "line",
-    text: ["Bloom knew the vague “onboarding thing” meant Daniel's request in Slack, because Sam allowed accesss to it."],
+    text: ["Bloom knew the vague “onboarding thing” meant Daniel's request in Slack, because Sam allowed access to it."],
   },
   {
     kind: "phone",
-    caption: "Settings: every app bloom can read has its own switch. Gmail stays off.",
+    caption: "Settings: every app Bloom can read has its own switch. Gmail stays off.",
     src: url("/assets/story/context.mp4"),
     pill: {
       label: "Contextual intelligence",
       title: "Contextual intelligence",
       body: [
         "People talk in shorthand. Context from your calendar, Slack and Notion turns “the onboarding thing” into Daniel's request, due Monday, without you having to explain it.",
-        "But you can only trust a tool if you know what it's looking at. bloom only reads: it never posts, replies or edits. Each app has its own switch, and anything you leave off, like Gmail here, it never sees.",
+        "But you can only trust a tool if you know what it's looking at. Bloom only reads: it never posts, replies or edits. Each app has its own switch, and anything you leave off, like Gmail here, it never sees.",
       ],
     },
   },
@@ -147,7 +147,7 @@ export const story: Block[] = [
       body: [
         "Unfinished tasks stick in the mind. Psychologists call this the Zeigarnik effect: we keep thinking about what we haven't finished, which is exactly what keeps work running in your head at night.",
         "You don't have to finish a task to let it go. Making a specific plan for it is enough to stop it replaying, and people who wrote down tomorrow's to-dos before bed fell asleep faster than people who didn't.",
-        "So bloom parks loose ends overnight and asks nothing of you until morning. They use Google Calendar's colours so a task looks the same in both places, and imported meetings stay faded so your own tasks stand out.",
+        "So Bloom parks loose ends overnight and asks nothing of you until morning. They use Google Calendar's colours so a task looks the same in both places, and imported meetings stay faded so your own tasks stand out.",
       ],
       refs: [
         "Zeigarnik (1927), Psychologische Forschung",
@@ -187,13 +187,13 @@ export const story: Block[] = [
 
 export const closing = {
   big: ["The workday ends", "when you say it does."],
-  statement: "bloom is a concept by cameron, jessie, jovey and sneha for deco3200",
+  statement: "Bloom is a concept by cameron, jessie, jovey and sneha for deco3200",
   cta: { label: "Try the demo", href: url("/demo") },
   footer: {
     links: [
       { label: "About", href: url("/") },
       { label: "Demo", href: url("/demo") },
     ],
-    note: "© 2026 bloom · DECO3200",
+    note: "© 2026 Bloom · DECO3200",
   },
 };

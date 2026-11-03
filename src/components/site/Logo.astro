@@ -1,13 +1,13 @@
 ---
 import { url } from "../../lib/path";
-// bloom's mark (𖧷, a four-petal flower) and the name.
+// Bloom's mark (𖧷, a four-petal flower) and the name.
 interface Props {
   size?: number;
 }
 const { size = 40 } = Astro.props;
 ---
 
-<span class="wordmark" style={`font-size:${size}px`} role="img" aria-label="bloom">
+<span class="wordmark" style={`font-size:${size}px`} role="img" aria-label="Bloom">
   <img class="wordmark-mark" src={url("/assets/logo.svg")} alt="" aria-hidden="true" />
-  <span aria-hidden="true">bloom</span>
+  <span aria-hidden="true">Bloom</span>
 </span>

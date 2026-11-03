@@ -1,14 +1,16 @@
 # Builds the Astro site and publishes it to GitHub Pages
-# whenever main changes (or when run by hand from the Actions tab).
+# when main or product-story changes (or when run by hand from the Actions tab).
+# A push to product-story also updates main, so the live branch stays current
+# without a separate merge.
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, product-story]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -38,3 +40,21 @@ jobs:
       - name: Publish to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Keep main level with product-story after the site has published.
+  # Pushes made with the workflow token do not start another deploy.
+  update-main:
+    if: github.ref == 'refs/heads/product-story'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Merge product-story into main
+        run: |
+          git fetch origin product-story
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' merge --no-ff origin/product-story -m "Update main from product-story"
+          git push origin HEAD:main
